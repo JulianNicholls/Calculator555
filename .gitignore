@@ -1,0 +1,10 @@
+*.swp
+.DS_Store
+*~
+*.bak
+*.gz
+*.xml
+*.sql
+temp/
+.sass-cache/*
+bootstrap/*

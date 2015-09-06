@@ -17,6 +17,9 @@ class Calculator555
     1 / period
   end
 
+  alias_method :Hz, :hz
+  alias_method :frequency, :hz
+
   def th
     check_r1_r2
     MULTIPLIER * (r1 + r2) * @c
@@ -42,8 +45,6 @@ class Calculator555
   def hz=(value)
     @hz = value
   end
-
-  alias_method :Hz, :hz
 
   def ra
     r1
