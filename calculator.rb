@@ -1,3 +1,4 @@
+# Calculate the parameters for a 555 timer.
 class Calculator555
   MULTIPLIER = 0.693
 
@@ -46,6 +47,12 @@ class Calculator555
     @hz = value
   end
 
+  alias_method :frequency=, :hz=
+
+  def period=
+    self.hz = 1 / period
+  end
+
   def ra
     r1
   end
@@ -66,10 +73,10 @@ class Calculator555
     fail "Bad Unit: #{unit}" unless unit =~ /[upnµ]f/i
 
     case unit[0].downcase
-    when p then value * 10 ** -12   # Pico
-    when n then value * 10 ** -9    # Nano
+    when p then value * 10**-12   # Pico
+    when n then value * 10**-9    # Nano
     else
-      value * 10 ** -6              # Micro
+      value * 10**-6              # Micro
     end
   end
 end
