@@ -15,6 +15,10 @@ class Calculator555
     th + tl
   end
 
+  def period_ms
+    period * 1000.0
+  end
+
   def hz
     (1.0 / period).round(2)
   end
@@ -79,8 +83,8 @@ class Calculator555
   end
 
   def calc_r1_r2
-    new_tl = @period * (1 - @duty)
-    new_th = @period - new_tl
+    new_th = @period * @duty
+    new_tl = @period - new_th
 
     @r2 = (new_tl / (MULTIPLIER * c)).round(1)
     @r1 = ((new_th / (MULTIPLIER * c)) - r2).round(1)
