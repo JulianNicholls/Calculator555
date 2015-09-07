@@ -3,6 +3,7 @@ require 'minitest/pride'
 
 require './calculator'
 
+# Test class for Calculator555
 class Calc555Test < Minitest::Test
   def setup
     @calc = Calculator555.new(22)
@@ -11,33 +12,39 @@ class Calc555Test < Minitest::Test
   end
 
   def test_raw_initialize
-    calc = Calculator555.new(22)  # Implied µF
+    calc = Calculator555.new(22) # Implied micro F
 
-    assert_equal calc.c, 22 * 10**-6
+    assert_equal 22.0 * 10**-6, calc.c
+  end
+
+  def test_raw_initialize_with_string
+    calc = Calculator555.new('22') # Implied micro F
+
+    assert_equal 22.0 * 10**-6, calc.c
   end
 
   def test_uf_convert
     calc = Calculator555.new(47, 'uF')
 
-    assert_equal calc.c, 47 * 10**-6
+    assert_equal 47.0 * 10**-6, calc.c
   end
 
   def test_mu_f_convert
     calc = Calculator555.new(47, 'µF')
 
-    assert_equal calc.c, 47 * 10**-6
+    assert_equal 47.0 * 10**-6, calc.c
   end
 
   def test_nf_convert
     calc = Calculator555.new(47, 'nF')
 
-    assert_equal calc.c, 47 * 10**-9
+    assert_equal 47.0 * 10**-9, calc.c
   end
 
   def test_pf_convert
     calc = Calculator555.new(47, 'pF')
 
-    assert_equal calc.c, 47 * 10**-12
+    assert_equal 47.0 * 10**-12, calc.c
   end
 
   def test_ra
@@ -98,15 +105,15 @@ class Calc555Test < Minitest::Test
 
   def test_calculate_r1_r2_duty_cycle_percent_frequency
     @calc.duty_cycle = 55  # 55%
-    @calc.frequency = 5    # 200ms
+    @calc.frequency = 5    # 5 Hz
 
     assert_in_delta 5903, @calc.r2, 1
     assert_in_delta 1312, @calc.r1, 1
   end
 
   def test_calculate_r1_r2_duty_cycle_percent_hz
-    @calc.duty_cycle = 55  # 55%
-    @calc.frequency = 5    # 200ms
+    @calc.duty_cycle = 55   # 55%
+    @calc.hz = 5            # 5 Hz
 
     assert_in_delta 5903, @calc.r2, 1
     assert_in_delta 1312, @calc.r1, 1

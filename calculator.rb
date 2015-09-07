@@ -6,7 +6,7 @@ class Calculator555
   attr_accessor :r1, :r2
 
   def initialize(capacitor, unit = 'µF')
-    @c = interpret(capacitor, unit)
+    @c = interpret(capacitor.to_f, unit)
   end
 
   def period
@@ -67,9 +67,6 @@ class Calculator555
   end
 
   def calc_r1_r2
-    fail "Duty Cycle not set" if @duty.nil?
-    fail "Period not set" if @period.nil?
-
     new_tl = @period * (1 - @duty)
     new_th = @period - new_tl
 
@@ -84,13 +81,13 @@ class Calculator555
   end
 
   def interpret(value, unit)
-    fail "Bad Unit: #{unit}" unless unit =~ /[upnµ]f/i
+    fail 'Bad Unit: #{unit}' unless unit =~ /[upnµ]f/i
 
     case unit[0].downcase
     when 'p' then value * 10**-12   # Pico
     when 'n' then value * 10**-9    # Nano
     else
-      value * 10**-6              # Micro
+      value * 10**-6                # Micro
     end
   end
 end
