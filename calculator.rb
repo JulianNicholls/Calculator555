@@ -27,13 +27,25 @@ class Calculator555
     (MULTIPLIER * (r1 + r2) * c).round(3)
   end
 
+  def th_ms
+    th * 1000.0
+  end
+
   def tl
     check_r1_r2
     (MULTIPLIER * r2 * c).round(3)
   end
 
+  def tl_ms
+    tl * 1000.0
+  end
+
   def duty_cycle
-    (tl / (th + tl)).round(3)
+    (th / (th + tl)).round(3)
+  end
+
+  def duty_cycle_percent
+    duty_cycle * 100.0
   end
 
   def duty_cycle=(value)
