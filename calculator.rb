@@ -2,20 +2,21 @@
 class Calculator555
   MULTIPLIER = 0.693
 
-  attr_accessor r1, r2
+  attr_reader :c
+  attr_accessor :r1, :r2
 
-  def initialize(capacitor, unit = 'uF')
+  def initialize(capacitor, unit = 'µF')
     @c = interpret(capacitor, unit)
   end
 
   def period
     check_r1_r2
 
-    MULTIPLER * r1 * 2 * r2 * @c
+    th + tl
   end
 
   def hz
-    1 / period
+    (1.0 / period).round(2)
   end
 
   alias_method :Hz, :hz
@@ -23,35 +24,39 @@ class Calculator555
 
   def th
     check_r1_r2
-    MULTIPLIER * (r1 + r2) * @c
+    (MULTIPLIER * (r1 + r2) * c).round(3)
   end
 
   def tl
     check_r1_r2
-    MULTIPLIER * r2 * c
+    (MULTIPLIER * r2 * c).round(3)
   end
 
   def duty_cycle
-    tl / (th + tl)
+    (tl / (th + tl)).round(3)
   end
 
   def duty_cycle=(value)
-    @duty = if value < 1
-              value
-            else
-              value / 100
-            end
+    @duty = (value < 1) ? value : (value / 100.0)
+
+    return if @period.nil?
+
+    calc_r1_r2
+  end
+
+  def period=(value)
+    @period = (value < 1.0) ? value : (value / 1000.0)
+
+    return if @duty.nil?
+
+    calc_r1_r2
   end
 
   def hz=(value)
-    @hz = value
+    self.period = 1.0 / value
   end
 
   alias_method :frequency=, :hz=
-
-  def period=
-    self.hz = 1 / period
-  end
 
   def ra
     r1
@@ -61,20 +66,29 @@ class Calculator555
     r2
   end
 
+  def calc_r1_r2
+    fail "Duty Cycle not set" if @duty.nil?
+    fail "Period not set" if @period.nil?
+
+    new_tl = @period * (1 - @duty)
+    new_th = @period - new_tl
+
+    @r2 = (new_tl / (MULTIPLIER * c)).round(1)
+    @r1 = ((new_th / (MULTIPLIER * c)) - r2).round(1)
+  end
+
   private
 
   def check_r1_r2
-    fail 'R1 and R2 must be set' if @r1.nil || @r2.nil
+    fail 'R1 and R2 must be set' if r1.nil? || r2.nil?
   end
 
   def interpret(value, unit)
-    return value if unit.nil?
-
     fail "Bad Unit: #{unit}" unless unit =~ /[upnµ]f/i
 
     case unit[0].downcase
-    when p then value * 10**-12   # Pico
-    when n then value * 10**-9    # Nano
+    when 'p' then value * 10**-12   # Pico
+    when 'n' then value * 10**-9    # Nano
     else
       value * 10**-6              # Micro
     end
