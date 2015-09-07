@@ -28,7 +28,7 @@ class Calculator555
 
   def th
     check_r1_r2
-    (MULTIPLIER * (r1 + r2) * c).round(3)
+    (c_factor * (r1 + r2)).round(3)
   end
 
   def th_ms
@@ -37,7 +37,7 @@ class Calculator555
 
   def tl
     check_r1_r2
-    (MULTIPLIER * r2 * c).round(3)
+    (c_factor * r2).round(3)
   end
 
   def tl_ms
@@ -86,11 +86,15 @@ class Calculator555
     new_th = @period * @duty
     new_tl = @period - new_th
 
-    @r2 = (new_tl / (MULTIPLIER * c)).round(1)
-    @r1 = ((new_th / (MULTIPLIER * c)) - r2).round(1)
+    @r2 = (new_tl / c_factor).round(1)
+    @r1 = ((new_th / c_factor) - r2).round(1)
   end
 
   private
+
+  def c_factor
+    MULTIPLIER * c
+  end
 
   def check_r1_r2
     fail 'R1 and R2 must be set' if r1.nil? || r2.nil?
