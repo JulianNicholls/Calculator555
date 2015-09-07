@@ -65,8 +65,20 @@ class Calc555Test < Minitest::Test
     assert_in_delta 0.098, @calc.tl, 0.0005
   end
 
+  def test_th_ms
+    assert_in_delta 104, @calc.th_ms, 0.5
+  end
+
+  def test_tl_ms
+    assert_in_delta 98, @calc.tl_ms, 0.5
+  end
+
   def test_period_with_explicit_r1_r2
     assert_in_delta 0.202, @calc.period, 0.0005
+  end
+
+  def test_period_ms
+    assert_in_delta 202, @calc.period_ms, 0.5
   end
 
   def test_frequency_hz_Hz_with_explicit_r1_r2
@@ -76,7 +88,11 @@ class Calc555Test < Minitest::Test
   end
 
   def test_duty_cycle_with_explicit_r1_r2
-    assert_in_delta 0.485, @calc.duty_cycle, 0.0005
+    assert_in_delta 0.515, @calc.duty_cycle, 0.0005
+  end
+
+  def test_duty_cycle_percent
+    assert_in_delta 51.5, @calc.duty_cycle_percent, 0.05
   end
 
   def test_calculate_r1_r2_duty_cycle_period
