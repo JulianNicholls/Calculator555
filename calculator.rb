@@ -44,15 +44,15 @@ class Calculator555
     tl * 1000.0
   end
 
-  def duty_cycle
+  def duty_ratio
     (th / (th + tl)).round(3)
   end
 
-  def duty_cycle_percent
-    duty_cycle * 100.0
+  def duty_ratio_percent
+    duty_ratio * 100.0
   end
 
-  def duty_cycle=(value)
+  def duty_ratio=(value)
     @duty = (value < 1) ? value : (value / 100.0)
 
     return if @period.nil?

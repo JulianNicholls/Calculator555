@@ -87,48 +87,48 @@ class Calc555Test < Minitest::Test
     assert_in_delta 4.95, @calc.frequency, 0.0005
   end
 
-  def test_duty_cycle_with_explicit_r1_r2
-    assert_in_delta 0.515, @calc.duty_cycle, 0.0005
+  def test_duty_ratio_with_explicit_r1_r2
+    assert_in_delta 0.515, @calc.duty_ratio, 0.0005
   end
 
-  def test_duty_cycle_percent
-    assert_in_delta 51.5, @calc.duty_cycle_percent, 0.05
+  def test_duty_ratio_percent
+    assert_in_delta 51.5, @calc.duty_ratio_percent, 0.05
   end
 
-  def test_calculate_r1_r2_duty_cycle_period
-    @calc.duty_cycle = 0.55   # 55%
+  def test_calculate_r1_r2_duty_ratio_period
+    @calc.duty_ratio = 0.55   # 55%
     @calc.period = 0.200      # 200ms
 
     assert_in_delta 5903, @calc.r2, 1
     assert_in_delta 1312, @calc.r1, 1
   end
 
-  def test_calculate_r1_r2_duty_cycle_percent_period
-    @calc.duty_cycle = 55   # 55%
+  def test_calculate_r1_r2_duty_ratio_percent_period
+    @calc.duty_ratio = 55   # 55%
     @calc.period = 0.200    # 200ms
 
     assert_in_delta 5903, @calc.r2, 1
     assert_in_delta 1312, @calc.r1, 1
   end
 
-  def test_calculate_r1_r2_duty_cycle_percent_period_ms
-    @calc.duty_cycle = 55  # 55%
+  def test_calculate_r1_r2_duty_ratio_percent_period_ms
+    @calc.duty_ratio = 55  # 55%
     @calc.period = 200     # 200ms
 
     assert_in_delta 5903, @calc.r2, 1
     assert_in_delta 1312, @calc.r1, 1
   end
 
-  def test_calculate_r1_r2_duty_cycle_percent_frequency
-    @calc.duty_cycle = 55  # 55%
+  def test_calculate_r1_r2_duty_ratio_percent_frequency
+    @calc.duty_ratio = 55  # 55%
     @calc.frequency = 5    # 5 Hz
 
     assert_in_delta 5903, @calc.r2, 1
     assert_in_delta 1312, @calc.r1, 1
   end
 
-  def test_calculate_r1_r2_duty_cycle_percent_hz
-    @calc.duty_cycle = 55   # 55%
+  def test_calculate_r1_r2_duty_ratio_percent_hz
+    @calc.duty_ratio = 55   # 55%
     @calc.hz = 5            # 5 Hz
 
     assert_in_delta 5903, @calc.r2, 1
