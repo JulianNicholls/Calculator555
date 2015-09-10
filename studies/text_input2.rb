@@ -108,8 +108,10 @@ class TextField < Gosu::TextInput
   def draw_selection
     return if sel_x == pos_x
 
-    @window.draw_rectangle(Point([sel_x, pos_x].min, y),
-                           Size((pos_x - sel_x).abs, height),
+    sel_left  = [sel_x, pos_x].min
+    sel_width = [sel_x, pos_x].max - left
+
+    @window.draw_rectangle(Point(sel_left, y), Size(sel_width, height),
                            0, SELECTION_COLOR)
   end
 
@@ -117,8 +119,8 @@ class TextField < Gosu::TextInput
   def draw_caret
     return unless active_field?
 
-    @window.draw_simple_line(Point(pos_x, y),
-                             Point(pos_x, y + height), 0, CARET_COLOR)
+    @window.draw_simple_line(Point(pos_x, y), Point(pos_x, y + height),
+                             0, CARET_COLOR)
   end
 
   # Calculate the position of the caret and the selection start.

@@ -1,35 +1,44 @@
-#!/usr/bin/env ruby -I. -w
+#!/usr/bin/env ruby -I.
 
 require 'calculator'
 require 'term/ansicolor'
 
+# A text-based 555 timer calculator
 class TextCalculator
   include Term::ANSIColor
+
+  FUNCTIONS = {
+    R:  -> { calculate_cycle_times },
+    P:  -> { calculate_resistors_from_period },
+    F:  -> { calculate_resistors_from_frequency },
+    Q:  -> { exit }
+  }
 
   def run
     show_title
     initialize_calculator
 
     loop do
-      op = input "\nEnter Duty Cycle and (P)eriod or (F)requency, (R)esistor values, or (Q)uit"
+      op = input(run_prompt)[0].upcase.to_sym
 
-      case op[0].upcase
-      when 'R'  then calculate_cycle_times
-      when 'P'  then calculate_resistors_from_period
-      when 'F'  then calculate_resistors_from_frequency
-      when 'Q'  then exit
-      end
+      instance_exec(&FUNCTIONS[op]) if FUNCTIONS.key? op
     end
   end
 
   private
 
+  def run_prompt
+    "\nEnter Duty Ratio and (" + highlight('P') + ')eriod or (' +
+      highlight('F') + ')requency, (' + highlight('R') +
+      ')esistor values, or (' + highlight('Q') + ')uit'
+  end
+
   def show_title
-    puts cyan + bold + "555 Timer Calculator\n====================\n" + reset
+    puts highlight("555 Timer Calculator\n====================\n", cyan)
   end
 
   def initialize_calculator
-    entered_cap = input 'Capacitor: (22µF)'
+    entered_cap = input 'Capacitor: (' + highlight('22µF') + ')'
 
     cap = entered_cap == '' ? [22, 'µF'] : decode_cap_entry(entered_cap)
 
@@ -37,64 +46,81 @@ class TextCalculator
   end
 
   def calculate_cycle_times
-    @calc.r1 = input_float "\nEnter the R1 value"
-    @calc.r2 = input_float 'Enter the R2 value'
+    @calc.r1 = input_float("\nEnter the R1 value", 1)
+    @calc.r2 = input_float('Enter the R2 value', 1)
 
     show_results
   end
 
   def calculate_resistors_from_period
-    enter_duty_cycle
-    @calc.period = input_float "Enter the Period in ms"
+    # Allow 10us to 1 minute
+    @calc.period = input_float("\nEnter the Period in ms", 0.000001, 60_000)
+    enter_duty_ratio
 
     show_results
   end
 
   def calculate_resistors_from_frequency
-    enter_duty_cycle
-    @calc.frequency = input_float "Enter the Frequency in Hz"
+    # Allow 1 in 60 seconds up to 100kHz
+    @calc.frequency = input_float("\nEnter the Frequency in Hz", 0.016, 100_000)
+    enter_duty_ratio
 
     show_results
   end
 
-  def enter_duty_cycle
-    @calc.duty_cycle = input_float "\nEnter the Duty Cycle Percentage"
+  def enter_duty_ratio
+    @calc.duty_ratio = input_float('Enter the Duty Ratio', 50, 99.9)
   end
 
   def show_results
-    puts bold + cyan + "\n    Calculated Values\n    =================\n" + yellow
-    printf "Frequency:  %5.1fHz  (%.1fms)\n", @calc.frequency, @calc.period_ms
-    printf "Duty Cycle: %5.1f%%   (tl: %5.1fms, th: %5.1fms)\n\n",
-           @calc.duty_cycle_percent, @calc.th_ms, @calc.tl_ms
+    puts highlight("\n    Calculated Values\n    =================\n", cyan)
 
-    puts 'Resistors - R1: ' + resistor_value(@calc.r1) +
-         ', R2: ' + resistor_value(@calc.r2)
+    printf 'Frequency:  ' + highlight('%5.1fHz  ') + '(' + highlight('%.1fms') +
+      white + ")\n", @calc.frequency, @calc.period_ms
+
+    printf 'Duty Ratio: ' + highlight('%5.1f%%') + '   (th: ' +
+      highlight('%5.1fms') + ', tl: ' + highlight('%5.1fms') + ")\n\n",
+           @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms
+
+    puts 'Resistors - R1: ' + highlight(resistor_value(@calc.r1)) +
+      "\n            R2: " + highlight(resistor_value(@calc.r2))
   end
 
   def resistor_value(value)
-    if value < 10_000.0
-      value.to_s
+    if value < 5_000.0
+      value.to_s + 'Ω'
     elsif value < 1_000_000.0
-      (value / 1000.0).round(2).to_s + 'K'
+      (value / 1000.0).round(2).to_s + 'kΩ'
     else
-      (value / 1_000_000.0).round(2).to_s + 'M'
+      (value / 1_000_000.0).round(2).to_s + 'MΩ'
     end
   end
 
   def input(prompt)
-    print yellow + bold + prompt + '? ' + white
+    print white + prompt + '? ' + yellow
 
     $stdin.gets.chomp
   end
 
-  def input_float(prompt)
-    input(prompt).to_f
+  def input_float(prompt, min = 0.0, max = 10.0**25)
+    loop do
+      value = input(prompt).to_f
+
+      return value if value.between?(min, max)
+
+      print "\n" + red + 'The value must be between ' + yellow + "#{min}" +
+        red + ' and ' + yellow + "#{max}\n"
+    end
   end
 
   def decode_cap_entry(entry)
     parts = /(?<value>\d+)\s*(?<unit>[µupn][fF])/.match entry
 
     [parts[:value].to_i, parts[:unit]]
+  end
+
+  def highlight(str, high = yellow, reset = white)
+    high + str + reset
   end
 end
 
