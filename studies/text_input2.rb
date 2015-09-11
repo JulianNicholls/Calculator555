@@ -32,14 +32,14 @@ class TextField < Gosu::TextInput
 
   attr_reader :x, :y
 
-  def initialize(window, font, x, y)
+  def initialize(window, font, left, top)
     # TextInput's constructor doesn't expect any arguments.
     super()
 
     @window = window
     @font   = font
-    @x      = x
-    @y      = y
+    @x      = left
+    @y      = top
 
     # Start with a self-explanatory text in each field.
     self.text = 'Click to change text'
@@ -47,9 +47,9 @@ class TextField < Gosu::TextInput
 
   # Example filter method. You can truncate the text to employ a length limit,
   # limit the text to certain characters etc.
-  def filter(text)
-    text.upcase
-  end
+  # def filter(text)
+  #   text.upcase
+  # end
 
   def draw
     draw_background
@@ -78,14 +78,15 @@ class TextField < Gosu::TextInput
 
   # Tries to move the caret to the position specified by mouse_x
   def move_caret(mouse_x)
+    len = text.length
     # Default case: user must have clicked the right edge
-    self.caret_pos = self.selection_start = text.length
+    self.caret_pos = self.selection_start = len
 
     # Test character by character
-    1.upto(text.length) do |i|
-      next unless mouse_x < x + @font.text_width(text[0...i])
+    1.upto(len) do |index|
+      next unless mouse_x < x + @font.text_width(text[0...index])
 
-      self.caret_pos = self.selection_start = i - 1
+      self.caret_pos = self.selection_start = index - 1
       break
     end
   end
@@ -97,8 +98,10 @@ class TextField < Gosu::TextInput
     # the background's color.
     background = active_field? ? ACTIVE_COLOR : INACTIVE_COLOR
 
+    pad2 = 2 * PADDING
+
     @window.draw_rectangle(Point(x - PADDING, y - PADDING),
-                           Size(width + 2 * PADDING, height + 2 * PADDING),
+                           Size(width + pad2, height + pad2),
                            0, background)
   end
 
