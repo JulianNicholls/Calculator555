@@ -46,8 +46,8 @@ class TextCalculator
   end
 
   def calculate_cycle_times
-    @calc.r1 = input_float("\nEnter the R1 value", 1)
-    @calc.r2 = input_float('Enter the R2 value', 1)
+    @calc.r1_value = input_float("\nEnter the R1 value", 1)
+    @calc.r2_value = input_float('Enter the R2 value', 1)
 
     show_results
   end
@@ -82,15 +82,15 @@ class TextCalculator
       highlight('%5.1fms') + ', tl: ' + highlight('%5.1fms') + ")\n\n",
            @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms
 
-    puts 'Resistors - R1: ' + highlight(resistor_value(@calc.r1)) +
-      "\n            R2: " + highlight(resistor_value(@calc.r2))
+    puts 'Resistors - R1: ' + highlight(resistor_value(@calc.r1_value)) +
+      "\n            R2: " + highlight(resistor_value(@calc.r2_value))
   end
 
   def resistor_value(value)
     if value < 5_000.0
       value.to_s + 'Ω'
     elsif value < 1_000_000.0
-      (value / 1000.0).round(2).to_s + 'kΩ'
+      (value / 1_000.0).round(2).to_s + 'kΩ'
     else
       (value / 1_000_000.0).round(2).to_s + 'MΩ'
     end
@@ -108,8 +108,8 @@ class TextCalculator
 
       return value if value.between?(min, max)
 
-      print "\n" + red + 'The value must be between ' + yellow + "#{min}" +
-        red + ' and ' + yellow + "#{max}\n"
+      print "\n" + highlight('The value must be between ', red, yellow) +
+        "#{min}" + highlight(' and ', red, yellow) + "#{max}\n"
     end
   end
 

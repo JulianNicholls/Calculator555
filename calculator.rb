@@ -2,15 +2,15 @@
 class Calculator555
   MULTIPLIER = 0.693
 
-  attr_reader :c
-  attr_accessor :r1, :r2
+  attr_reader :cap_value
+  attr_accessor :r1_value, :r2_value
 
   def initialize(capacitor, unit = 'µF')
-    @c = interpret(capacitor.to_f, unit)
+    @cap_value = interpret(capacitor.to_f, unit)
   end
 
   def period
-    check_r1_r2
+    check_resistors
 
     th + tl
   end
@@ -27,8 +27,8 @@ class Calculator555
   alias_method :frequency, :hz
 
   def th
-    check_r1_r2
-    (c_factor * (r1 + r2)).round(3)
+    check_resistors
+    (c_factor * (r1_value + r2_value)).round(3)
   end
 
   def th_ms
@@ -36,8 +36,8 @@ class Calculator555
   end
 
   def tl
-    check_r1_r2
-    (c_factor * r2).round(3)
+    check_resistors
+    (c_factor * r2_value).round(3)
   end
 
   def tl_ms
@@ -57,7 +57,7 @@ class Calculator555
 
     return if @period.nil?
 
-    calc_r1_r2
+    calc_resistors
   end
 
   def period=(value)
@@ -65,7 +65,7 @@ class Calculator555
 
     return if @duty.nil?
 
-    calc_r1_r2
+    calc_resistors
   end
 
   def hz=(value)
@@ -74,30 +74,30 @@ class Calculator555
 
   alias_method :frequency=, :hz=
 
-  def ra
-    r1
+  def ra_value
+    r1_value
   end
 
-  def rb
-    r2
+  def rb_value
+    r2_value
   end
 
-  def calc_r1_r2
+  def calc_resistors
     new_th = @period * @duty
     new_tl = @period - new_th
 
-    @r2 = (new_tl / c_factor).round(1)
-    @r1 = ((new_th / c_factor) - r2).round(1)
+    @r2_value = (new_tl / c_factor).round(1)
+    @r1_value = ((new_th / c_factor) - r2_value).round(1)
   end
 
   private
 
   def c_factor
-    MULTIPLIER * c
+    MULTIPLIER * cap_value
   end
 
-  def check_r1_r2
-    fail 'R1 and R2 must be set' if r1.nil? || r2.nil?
+  def check_resistors
+    fail 'R1 and R2 must be set' if r1_value.nil? || r2_value.nil?
   end
 
   def interpret(value, unit)
