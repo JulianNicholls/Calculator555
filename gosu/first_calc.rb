@@ -27,7 +27,7 @@ require '../calculator'
 class FirstCalc < Gosu::Window
   include GosuEnhanced
 
-  WIDTH   = 560
+  WIDTH   = 520
   HEIGHT  = 700
 
   def initialize
@@ -35,11 +35,11 @@ class FirstCalc < Gosu::Window
     self.caption = 'First 555 Calculator'
 
     # Set up an array of three text fields.
-    @text_fields = Array.new(3) do |index|
-      TextField.new(self, Point(WIDTH - 80, 30 + index * 50))
+    @text_fields = Array.new(4) do |index|
+      TextField.new(self, Point(WIDTH - 80, 30 + index * 40))
     end
 
-    @diagram = Gosu::Image.new('../media/Monostable.png')
+    @diagram = Gosu::Image.new('../media/Astable.png')
   end
 
   def needs_cursor?
