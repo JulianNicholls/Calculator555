@@ -1,5 +1,7 @@
+#!/usr/bin/env ruby -I.
+
 # This example demonstrates the use of the TextInput functionality.
-# One can tab through, or click into the text fields and change it's contents.
+# One can tab through, or click into the text fields and change its contents.
 # At its most basic form, you only need to create a new TextInput instance and
 # set the text_input attribute of your window to it. Until you set this
 # attribute to nil again, the TextInput object will build a text that can be
@@ -17,135 +19,27 @@
 # presented here is not mandatory! Gosu only aims to provide enough code for
 # games (or intermediate UI toolkits) to be built upon it.
 
-require 'gosu_enhanced'
+require 'text_input'
 
-# Text field class
-class TextField < Gosu::TextInput
-  include GosuEnhanced
-
-  # Some constants that define our appearance.
-  SELECTION_COLOR = 0xcc8888ff
-  CARET_COLOR     = 0xff000000
-  PADDING         = 5
-
-  attr_reader :x, :y
-
-  def initialize(window, point, text = '')
-    # TextInput's constructor doesn't expect any arguments.
-    super()
-
-    @window   = window
-    @font     = Gosu::Font.new(18, name: Gosu.default_font_name)
-    @point    = point
-    self.text = text
-  end
-
-  # Example filter method. You can truncate the text to employ a length limit,
-  # limit the text to certain characters etc.
-  # def filter(text)
-  #   text.upcase
-  # end
-
-  def draw
-    draw_background
-    draw_selection
-    draw_caret
-
-    # Finally, draw the text itself!
-    @font.draw(text, @point.x, @point.y, 0, 1, 1, 0xff000000)
-  end
-
-  # This text field grows with the text that's being entered.
-  # (Usually one would use clip_to and scroll around on the text field.)
-  def width
-    45
-    # [200, @font.text_width(text)].max
-  end
-
-  def height
-    @font.height
-  end
-
-  # Hit-test for selecting a text field with the mouse.
-  def under_point?(mouse_x, mouse_y)
-    Region(@point.offset(-PADDING, -PADDING),
-           @point.offset(width + 2 * PADDING, width + 2 * PADDING))
-      .contains?(mouse_x, mouse_y)
-  end
-
-  # Tries to move the caret to the position specified by mouse_x
-  def move_caret(mouse_x)
-    len = text.length
-    # Default case: user must have clicked the right edge
-    self.caret_pos = self.selection_start = len
-
-    # Test character by character
-    1.upto(len) do |index|
-      next unless mouse_x < @point.x + @font.text_width(text[0...index])
-
-      self.caret_pos = self.selection_start = index - 1
-      break
-    end
-  end
-
-  private
-
-  def draw_background
-    pad2 = 2 * PADDING
-
-    @window.draw_rectangle(@point.offset(-PADDING, -PADDING),
-                           Size(width + pad2, height + pad2),
-                           0, Gosu::Color::WHITE)
-  end
-
-  # Draw the selection background, if any; if not, sel_x and pos_x will be
-  # the same value, making this rectangle empty.
-
-  def draw_selection
-    return if sel_x == pos_x
-
-    sel_left  = [sel_x, pos_x].min
-    sel_width = [sel_x, pos_x].max - left
-
-    @window.draw_rectangle(@point.offset(sel_left, 0), Size(sel_width, height),
-                           0, SELECTION_COLOR)
-  end
-
-  # Draw the caret; again, only if this is the currently selected field.
-  def draw_caret
-    return unless active_field?
-
-    @window.draw_simple_line(@point.offset(sel_x, 0),
-                             @point.offset(pos_x, height), 0, CARET_COLOR)
-  end
-
-  # Calculate the position of the caret and the selection start.
-  def pos_x
-    @font.text_width(text[0...caret_pos])
-  end
-
-  def sel_x
-    @font.text_width(text[0...selection_start])
-  end
-
-  # Are we the active field
-  def active_field?
-    @window.text_input == self
-  end
-end
+require '../calculator'
 
 # Test harness for textInput field
 class FirstCalc < Gosu::Window
   include GosuEnhanced
 
+  WIDTH   = 560
+  HEIGHT  = 700
+
   def initialize
-    super(600, 600, false)
+    super(WIDTH, HEIGHT, false)
     self.caption = 'First 555 Calculator'
 
     # Set up an array of three text fields.
     @text_fields = Array.new(3) do |index|
-      TextField.new(self, Point(520, 30 + index * 50))
+      TextField.new(self, Point(WIDTH - 80, 30 + index * 50))
     end
+
+    @diagram = Gosu::Image.new('../media/Monostable.png')
   end
 
   def needs_cursor?
@@ -153,6 +47,9 @@ class FirstCalc < Gosu::Window
   end
 
   def draw
+    draw_rectangle(Point(0, 0), Size(WIDTH, HEIGHT), 0, Gosu::Color::WHITE)
+    @diagram.draw(20, HEIGHT - (@diagram.height + 20), 0)
+
     @text_fields.each(&:draw)
   end
 
