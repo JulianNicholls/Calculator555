@@ -22,6 +22,7 @@
 require 'text_input'
 
 require '../calculator'
+require 'label_render'
 
 # Test harness for textInput field
 class FirstCalc < Gosu::Window
@@ -30,13 +31,30 @@ class FirstCalc < Gosu::Window
   WIDTH   = 520
   HEIGHT  = 700
 
+  INPUT_TOP_LEFT  = GosuEnhanced::Point(220, 30)
+  RESULT_TOP_LEFT = GosuEnhanced::Point(220, 190)
+
+  INPUT_LABELS  = [
+    'Frequency in Hz', 'Period in ms', 'Duty Ratio % (50-99)', 'C1 in µF'
+  ]
+
+  DEFAULTS      = ['1', '', '50', '22']
+
+  RESULT_LABELS = ['R1', 'R2']
+
   def initialize
     super(WIDTH, HEIGHT, false)
     self.caption = 'First 555 Calculator'
 
-    # Set up an array of three text fields.
+    @font = Gosu::Font.new(18, name: Gosu.default_font_name)
+
+    @labels = LabelsRenderer.new
+    @labels.add_block(INPUT_LABELS, INPUT_TOP_LEFT, @font, 0xff000000, 40)
+    @labels.add_block(RESULT_LABELS, RESULT_TOP_LEFT, @font, 0xff000000, 40)
+
+    # Set up an array of four text fields.
     @text_fields = Array.new(4) do |index|
-      TextField.new(self, Point(WIDTH - 80, 30 + index * 40))
+      TextField.new(self, Point(WIDTH - 80, 30 + index * 40), DEFAULTS[index])
     end
 
     @diagram = Gosu::Image.new('../media/Astable.png')
@@ -50,6 +68,7 @@ class FirstCalc < Gosu::Window
     draw_rectangle(Point(0, 0), Size(WIDTH, HEIGHT), 0, Gosu::Color::WHITE)
     @diagram.draw(20, HEIGHT - (@diagram.height + 20), 0)
 
+    @labels.process_blocks
     @text_fields.each(&:draw)
   end
 
