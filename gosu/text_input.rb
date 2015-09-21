@@ -1,28 +1,41 @@
 require 'gosu_enhanced'
+require 'constants'
+
+# The Gosu TextInput object maintains the position of the caret as the index
+# of the character that it's left of via the caret_pos attribute. If there is
+# a selection, the selection_start attribute yields its beginning, using the
+# same indexing scheme. If there is no selection, selection_start is equal to
+# caret_pos.
+
+# A TextInput object is purely abstract; drawing the input field is left to
+# the user. In this case, we are subclassing TextInput to add this code.
+# As with most of Gosu, how this is handled is completely left open; Gosu only
+# aims to provide enough code for games (or intermediate UI toolkits) to be
+# built upon it.
 
 # Text field class
 class TextField < Gosu::TextInput
   include GosuEnhanced
+  include Constants
 
-  # Some constants that define our appearance.
-  SELECTION_COLOR = 0xcc88ffff
-  BOTTOM_PAD      = 1
-  REST_PAD        = 5
-
-  def initialize(window, point, text = '')
+  def initialize(window, point, text = '', options = {})
     # TextInput's constructor doesn't expect any arguments.
     super()
 
-    @window   = window
-    @font     = Gosu::Font.new(18, name: Gosu.default_font_name)
-    @point    = point
-    @border   = Region(@point.offset(-REST_PAD, -REST_PAD),
-                       @point.offset(width + 2 * REST_PAD, height + REST_PAD + BOTTOM_PAD))
-    self.text = text
+    @window     = window
+    @point      = point
+    self.text   = text
+
+    @base_size  = options.fetch(:width, 60)
+    @font       = options.fetch(:font,
+                                Gosu::Font.new(18, name: Gosu.default_font_name))
+
+    @border     = Region(@point.offset(-REST_PAD, -REST_PAD),
+                         Size(width + 2 * REST_PAD, height + REST_PAD + BOTTOM_PAD))
+
   end
 
-  # Example filter method. You can truncate the text to employ a length limit,
-  # limit the text to certain characters etc.
+  # Restrict the text to minus (not actually needed), full stop, and 0-9
   def filter(text)
     text.match /[0-9\-.]*/
   end
@@ -32,15 +45,12 @@ class TextField < Gosu::TextInput
     draw_selection
     draw_caret
 
-    # Finally, draw the text itself!
     @font.draw(text, @point.x, @point.y, 0, 1, 1, 0xff000000)
   end
 
-  # This text field grows with the text that's being entered.
-  # (Usually one would use clip_to and scroll around on the text field.)
+  # Potentially grow size
   def width
-    45
-    # [200, @font.text_width(text)].max
+    [@base_size, full_text_width].max
   end
 
   def height
@@ -99,6 +109,10 @@ class TextField < Gosu::TextInput
     @window.draw_simple_line(@point.offset(sel_x, 0),
                              @point.offset(pos_x + 1, height),
                              0, Gosu::Color::BLACK)
+  end
+
+  def full_text_width
+    @font.text_width(text)
   end
 
   # Calculate the position of the caret and the selection start.
