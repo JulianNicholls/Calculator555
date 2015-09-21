@@ -7,40 +7,16 @@
 # attribute to nil again, the TextInput object will build a text that can be
 # accessed via TextInput#text.
 
-# The TextInput object also maintains the position of the caret as the index
-# of the character that it's left to via the caret_pos attribute. Furthermore,
-# if there is a selection, the selection_start attribute yields its beginning,
-# using the same indexing scheme. If there is no selection, selection_start
-# is equal to caret_pos.
-
-# A TextInput object is purely abstract, though; drawing the input field is left
-# to the user. In this case, we are subclassing TextInput to add this code.
-# As with most of Gosu, how this is handled is completely left open; the scheme
-# presented here is not mandatory! Gosu only aims to provide enough code for
-# games (or intermediate UI toolkits) to be built upon it.
-
 require 'text_input'
 
 require '../calculator'
 require 'label_render'
+require 'constants'
 
 # Test harness for textInput field
 class FirstCalc < Gosu::Window
   include GosuEnhanced
-
-  WIDTH   = 520
-  HEIGHT  = 700
-
-  INPUT_TOP_LEFT  = GosuEnhanced::Point(220, 30)
-  RESULT_TOP_LEFT = GosuEnhanced::Point(220, 190)
-
-  INPUT_LABELS  = [
-    'Frequency in Hz', 'Period in ms', 'Duty Ratio % (50-99)', 'C1 in µF'
-  ]
-
-  DEFAULTS      = ['1', '', '50', '22']
-
-  RESULT_LABELS = ['R1', 'R2']
+  include Constants
 
   def initialize
     super(WIDTH, HEIGHT, false)
@@ -50,14 +26,17 @@ class FirstCalc < Gosu::Window
 
     @labels = LabelsRenderer.new
     @labels.add_block(INPUT_LABELS, INPUT_TOP_LEFT, @font, 0xff000000, 40)
-    @labels.add_block(RESULT_LABELS, RESULT_TOP_LEFT, @font, 0xff000000, 40)
+    @labels.add_block(RESULT_LABELS, RESULT_TOP_LEFT, @font, 0xff000080, 40)
 
     # Set up an array of four text fields.
     @text_fields = Array.new(4) do |index|
-      TextField.new(self, Point(WIDTH - 80, 30 + index * 40), DEFAULTS[index])
+      TextField.new(self, Point(WIDTH - 80, 30 + index * 40),
+                    INPUT_DEFAULTS[index])
     end
 
     @diagram = Gosu::Image.new('../media/Astable.png')
+
+    @calculator = Calculator555.new(INPUT_DEFAULTS[C1_INDEX])
   end
 
   def needs_cursor?
@@ -74,7 +53,7 @@ class FirstCalc < Gosu::Window
 
   def button_down(id)
     case id
-    when Gosu::KbTab    then set_next_field
+    when Gosu::KbTab    then calculate_and_move_on
     when Gosu::KbEscape then unselect_or_exit
     when Gosu::MsLeft   then select_field
     end
@@ -82,11 +61,39 @@ class FirstCalc < Gosu::Window
 
   private
 
-  def set_next_field
-    # Tab key will not be 'eaten' by text fields; use for switching through
-    # text fields.
+  def calculate_and_move_on
     index = @text_fields.index(text_input) || -1
     self.text_input = @text_fields[(index + 1) % @text_fields.size]
+
+    if index == HZ_INDEX
+      calculate_resistors_from_frequency
+    else
+      calculate_resistors_from_period
+    end
+
+    puts "RA: #{@calculator.ra_value}, RB: #{@calculator.rb_value}"
+  end
+
+  def calculate_resistors_from_frequency
+    @calculator.frequency = text_field_value(HZ_INDEX)
+    load_duty_c1
+    @text_fields[PERIOD_INDEX].text = @calculator.period_ms
+  end
+
+  def calculate_resistors_from_period
+    @calculator.period = text_field_value(PERIOD_INDEX)
+    load_duty_c1
+    @text_fields[HZ_INDEX].text = @calculator.frequency
+  end
+
+  def load_duty_c1
+    @calculator.cap_value  = text_field_value(C1_INDEX)
+    @calculator.duty_ratio = text_field_value(DUTY_INDEX)
+    puts "LDC1: #{@calculator.cap_value}, #{@calculator.duty_ratio_percent}"
+  end
+
+  def text_field_value(index)
+    @text_fields[index].text.to_f
   end
 
   def unselect_or_exit
