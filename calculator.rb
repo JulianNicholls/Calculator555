@@ -82,6 +82,12 @@ class Calculator555
     r2_value
   end
 
+  def cap_value=(value)
+    @cap_value = value > 1 ? value * 10**-6 : value
+  end
+
+  private
+
   def calc_resistors
     new_th = @period * @duty
     new_tl = @period - new_th
@@ -89,8 +95,6 @@ class Calculator555
     @r2_value = (new_tl / c_factor).round(1)
     @r1_value = ((new_th / c_factor) - r2_value).round(1)
   end
-
-  private
 
   def c_factor
     MULTIPLIER * cap_value
