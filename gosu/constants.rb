@@ -6,6 +6,8 @@ module Constants
   INPUT_TOP_LEFT  = GosuEnhanced::Point(200, 30)
   RESULT_TOP_LEFT = GosuEnhanced::Point(200, 190)
 
+  NUM_FIELDS      = 4
+
   INPUT_LABELS    = [
     'Frequency in Hz', 'Period in ms', 'Duty Ratio % (50-99)', 'C1 in µF'
   ]
