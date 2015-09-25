@@ -19,7 +19,7 @@ class TextField < Gosu::TextInput
   include Constants
 
   def initialize(window, point, text = '', options = {})
-    # TextInput's constructor doesn't expect any arguments.
+    # Gosu::TextInput's constructor doesn't expect any arguments.
     super()
 
     @window     = window

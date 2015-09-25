@@ -1,3 +1,15 @@
+# Label Block
+LabelBlock = Struct.new(:texts, :top_left, :font, :colour, :leading) do
+  def render
+    text_pos = top_left.dup
+
+    texts.each do |text|
+      font.draw(text, text_pos.x, text_pos.y, 0, 1, 1, colour)
+      text_pos.move_by!(0, leading)
+    end
+  end
+end
+
 # Label block renderer
 class LabelsRenderer
   def initialize
@@ -5,26 +17,11 @@ class LabelsRenderer
   end
 
   def add_block(texts, top_left, font, colour, leading = 0)
-    @blocks << {
-      texts:      texts,
-      top_left:   top_left,
-      font:       font,
-      colour:     colour,
-      leading:    leading != 0 ? leading : font.height
-    }
+    @blocks << LabelBlock.new(
+      texts, top_left, font, colour, leading != 0 ? leading : font.height)
   end
 
   def process_blocks
-    @blocks.each { |block| render block }
-  end
-
-  private
-
-  def render(block)
-    text_pos = block[:top_left].dup
-    block[:texts].each do |text|
-      block[:font].draw(text, text_pos.x, text_pos.y, 0, 1, 1, block[:colour])
-      text_pos.move_by!(0, block[:leading])
-    end
+    @blocks.each(&:render)
   end
 end
