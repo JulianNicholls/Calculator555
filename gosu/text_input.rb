@@ -27,17 +27,12 @@ class TextField < Gosu::TextInput
     self.text   = text
 
     @base_size  = options.fetch(:width, 60)
-    @font       = options.fetch(:font,
-                                Gosu::Font.new(18, name: Gosu.default_font_name))
-
-    @border     = Region(@point.offset(-REST_PAD, -REST_PAD),
-                         Size(width + 2 * REST_PAD, height + REST_PAD + BOTTOM_PAD))
-
+    @font       = options.fetch(:font, tf_default_font)
   end
 
-  # Restrict the text to minus (not actually needed), full stop, and 0-9
+  # Restrict the text to minus (not actually needed), decimal point, and 0-9
   def filter(text)
-    text.match /[0-9\-.]*/
+    text.match(/[0-9\-.]*/)
   end
 
   def draw
@@ -79,6 +74,17 @@ class TextField < Gosu::TextInput
 
   private
 
+  def tf_defgault_font
+    Gosu::Font.new(18, name: Gosu.default_font_name)
+  end
+
+  def border
+    @border ||= Region(
+      @point.offset(-REST_PAD, -REST_PAD),
+      Size(width + 2 * REST_PAD, height + REST_PAD + BOTTOM_PAD)
+    )
+  end
+
   def draw_background
     border   = active_field? ? Gosu::Color::BLUE : Gosu::Color::BLACK
     top_left = @border.position
@@ -98,8 +104,9 @@ class TextField < Gosu::TextInput
     sel_left  = [sel_x, pos_x].min
     sel_width = [sel_x, pos_x].max - sel_left
 
-    @window.draw_rectangle(@point.offset(sel_left, 0), Size(sel_width, height),
-                           0, SELECTION_COLOR)
+    @window.draw_rectangle(
+      @point.offset(sel_left, 0), Size(sel_width, height), 0, SELECTION_COLOR
+    )
   end
 
   # Draw the caret; again, only if this is the currently selected field.

@@ -22,11 +22,11 @@ class FirstCalc < Gosu::Window
     super(WIDTH, HEIGHT, false)
     self.caption = 'First 555 Calculator'
 
-    @font = Gosu::Font.new(18, name: Gosu.default_font_name)
+    font = Gosu::Font.new(18, name: Gosu.default_font_name)
 
     @labels = LabelsRenderer.new
-    @labels.add_block(INPUT_LABELS, INPUT_TOP_LEFT, @font, 0xff000000, 40)
-    @labels.add_block(RESULT_LABELS, RESULT_TOP_LEFT, @font, 0xff000080, 40)
+    @labels.add_block(INPUT_LABELS, INPUT_TOP_LEFT, font, 0xff000000, 40)
+    @labels.add_block(RESULT_LABELS, RESULT_TOP_LEFT, font, 0xff000080, 40)
 
     # Set up an array of four text fields.
     @text_fields = Array.new(NUM_FIELDS) do |index|
