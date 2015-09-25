@@ -29,7 +29,7 @@ class FirstCalc < Gosu::Window
     @labels.add_block(RESULT_LABELS, RESULT_TOP_LEFT, @font, 0xff000080, 40)
 
     # Set up an array of four text fields.
-    @text_fields = Array.new(4) do |index|
+    @text_fields = Array.new(NUM_FIELDS) do |index|
       TextField.new(self, Point(WIDTH - 80, 30 + index * 40),
                     INPUT_DEFAULTS[index])
     end
@@ -62,16 +62,16 @@ class FirstCalc < Gosu::Window
   private
 
   def calculate_and_move_on
-    index = @text_fields.index(text_input) || -1
-    self.text_input = @text_fields[(index + 1) % @text_fields.size]
+    index       = @text_fields.index(text_input) || -1
+    next_field  = (index + tab_delta) % NUM_FIELDS
+    self.text_input = @text_fields[next_field]
 
     if index == HZ_INDEX
       calculate_resistors_from_frequency
     else
       calculate_resistors_from_period
     end
-
-    puts "RA: #{@calculator.ra_value}, RB: #{@calculator.rb_value}"
+#    puts "RA: #{@calculator.ra_value}, RB: #{@calculator.rb_value}"
   end
 
   def calculate_resistors_from_frequency
@@ -89,7 +89,7 @@ class FirstCalc < Gosu::Window
   def load_duty_c1
     @calculator.cap_value  = text_field_value(C1_INDEX)
     @calculator.duty_ratio = text_field_value(DUTY_INDEX)
-    puts "LDC1: #{@calculator.cap_value}, #{@calculator.duty_ratio_percent}"
+#    puts "LDC1: #{@calculator.cap_value}, #{@calculator.duty_ratio_percent}"
   end
 
   def text_field_value(index)
@@ -97,12 +97,9 @@ class FirstCalc < Gosu::Window
   end
 
   def unselect_or_exit
-    # Escape key will not be 'eaten' by text fields; use for deselecting.
-    if text_input
-      self.text_input = nil
-    else
-      close
-    end
+    close unless text_input
+
+    self.text_input = nil
   end
 
   def select_field
@@ -113,6 +110,11 @@ class FirstCalc < Gosu::Window
 
     # Advanced: Move caret to clicked position
     text_input.move_caret(mouse_x) unless text_input.nil?
+  end
+
+  # Shift-Tab moves to the previous field
+  def tab_delta
+    button_down?(Gosu::KbLeftShift) || button_down?(Gosu::KbRightShift) ? -1 : 1
   end
 end
 
