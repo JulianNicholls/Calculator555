@@ -14,6 +14,8 @@ end
 class LabelsRenderer
   def initialize
     @blocks = []
+
+    yield self if block_given?
   end
 
   def add_block(texts, top_left, font, colour, leading = 0)
