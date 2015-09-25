@@ -54,7 +54,7 @@ class TextField < Gosu::TextInput
 
   # Hit-test for selecting a text field with the mouse.
   def under_point?(mouse_x, mouse_y)
-    @border.contains?(mouse_x, mouse_y)
+    border.contains?(mouse_x, mouse_y)
   end
 
   # Tries to move the caret to the position specified by mouse_x
@@ -74,7 +74,7 @@ class TextField < Gosu::TextInput
 
   private
 
-  def tf_defgault_font
+  def tf_default_font
     Gosu::Font.new(18, name: Gosu.default_font_name)
   end
 
@@ -86,11 +86,11 @@ class TextField < Gosu::TextInput
   end
 
   def draw_background
-    border   = active_field? ? Gosu::Color::BLUE : Gosu::Color::BLACK
-    top_left = @border.position
-    size     = @border.size
+    border_clr  = active_field? ? Gosu::Color::BLUE : Gosu::Color::BLACK
+    top_left    = border.position
+    size        = border.size
 
-    @window.draw_rectangle(top_left, size, 0, border)
+    @window.draw_rectangle(top_left, size, 0, border_clr)
     @window.draw_rectangle(top_left.offset(2, 2),
                            size.deflate(4, 4), 0, Gosu::Color::WHITE)
   end
