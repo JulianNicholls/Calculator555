@@ -2,6 +2,7 @@
 
 require 'calculator'
 require 'term/ansicolor'
+require 'results'
 
 # A text-based 555 timer calculator
 class TextCalculator
@@ -14,6 +15,8 @@ class TextCalculator
     Q:  -> { exit }
   }
 
+  UNRECOGNISED = -> { puts "\nUnrecognised Option" }
+
   def run
     show_title
     initialize_calculator
@@ -21,16 +24,18 @@ class TextCalculator
     loop do
       op = input(run_prompt)[0].upcase.to_sym
 
-      instance_exec(&FUNCTIONS[op]) if FUNCTIONS.key? op
+      instance_exec(&FUNCTIONS.fetch(op, UNRECOGNISED))
     end
   end
 
   private
 
   def run_prompt
-    "\nEnter Duty Ratio and (" + highlight('P') + ')eriod or (' +
-      highlight('F') + ')requency, (' + highlight('R') +
-      ')esistor values, or (' + highlight('Q') + ')uit'
+    "\nEnter Duty Ratio and (" +
+      highlight('P') + ')eriod or (' +
+      highlight('F') + ')requency, (' +
+      highlight('R') + ')esistor values, or (' +
+      highlight('Q') + ')uit'
   end
 
   def show_title
@@ -38,7 +43,7 @@ class TextCalculator
   end
 
   def initialize_calculator
-    entered_cap = input 'Capacitor: (' + highlight('22µF') + ')'
+    entered_cap = input('Capacitor: (' + highlight('22µF') + ')')
 
     cap = entered_cap == '' ? [22, 'µF'] : decode_cap_entry(entered_cap)
 
@@ -75,25 +80,7 @@ class TextCalculator
   def show_results
     puts highlight("\n    Calculated Values\n    =================\n", cyan)
 
-    printf 'Frequency:  ' + highlight('%5.1fHz  ') + '(' + highlight('%.1fms') +
-      white + ")\n", @calc.frequency, @calc.period_ms
-
-    printf 'Duty Ratio: ' + highlight('%5.1f%%') + '   (th: ' +
-      highlight('%5.1fms') + ', tl: ' + highlight('%5.1fms') + ")\n\n",
-           @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms
-
-    puts 'Resistors - R1: ' + highlight(resistor_value(@calc.r1_value)) +
-      "\n            R2: " + highlight(resistor_value(@calc.r2_value))
-  end
-
-  def resistor_value(value)
-    if value < 5_000.0
-      value.to_s + 'Ω'
-    elsif value < 1_000_000.0
-      (value / 1_000.0).round(2).to_s + 'kΩ'
-    else
-      (value / 1_000_000.0).round(2).to_s + 'MΩ'
-    end
+    Calc555Results.new(@calc).render
   end
 
   def input(prompt)
@@ -117,10 +104,6 @@ class TextCalculator
     parts = /(?<value>\d+)\s*(?<unit>[µupn][fF])/.match entry
 
     [parts[:value].to_i, parts[:unit]]
-  end
-
-  def highlight(str, high = yellow, reset = white)
-    high + str + reset
   end
 end
 
