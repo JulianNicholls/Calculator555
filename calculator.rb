@@ -52,14 +52,21 @@ class Calculator555
     duty_ratio * 100.0
   end
 
+  # A value less than 1 represents a proportion. Any other value is taken to
+  # be a percentage.
   def duty_ratio=(value)
-    @duty = (value < 1) ? value : (value / 100.0)
+    @duty = (value < 1.0) ? value : (value / 100.0)
+
+    fail 'Duty Cycle must be from 50% to 100%' if @duty < 0.5 || @duty > 1.0
 
     return if @period.nil?
 
     calc_resistors
   end
 
+  # A value less than 1 is assumed to be a fraction of a second, any larger
+  # value is assumed to be ms. This means that a period of say 1.1s could be
+  # specified as 1100 (ms).
   def period=(value)
     @period = (value < 1.0) ? value : (value / 1000.0)
 
@@ -82,8 +89,10 @@ class Calculator555
     r2_value
   end
 
+  # As with period= above, a value less than 1 is assumed to be a fraction of
+  # a Farad. Any other value is assumed to be a number of uF.
   def cap_value=(value)
-    @cap_value = value > 1 ? value * 10**-6 : value
+    @cap_value = (value < 1.0) ? value : value * 10**-6
   end
 
   private
@@ -92,8 +101,8 @@ class Calculator555
     new_th = @period * @duty
     new_tl = @period - new_th
 
-    @r2_value = (new_tl / c_factor).round(1)
-    @r1_value = ((new_th / c_factor) - r2_value).round(1)
+    self.r2_value = (new_tl / c_factor).round(1)
+    self.r1_value = ((new_th / c_factor) - r2_value).round(1)
   end
 
   def c_factor
@@ -105,7 +114,7 @@ class Calculator555
   end
 
   def interpret(value, unit)
-    fail 'Bad Unit: #{unit}' unless unit =~ /[upnµ]f/i
+    fail 'Bad Unit: #{unit}' unless unit =~ /[upnµ][fF]/
 
     case unit[0].downcase
     when 'p' then value * 10**-12   # Pico
