@@ -22,18 +22,8 @@ class FirstCalc < Gosu::Window
     super(WIDTH, HEIGHT, false)
     self.caption = 'First 555 Calculator'
 
-    font = Gosu::Font.new(18, name: Gosu.default_font_name)
-
-    @labels = LabelsRenderer.new do |labels|
-      labels.add_block(INPUT_LABELS, INPUT_TOP_LEFT, font, 0xff000000, 40)
-      labels.add_block(RESULT_LABELS, RESULT_TOP_LEFT, font, 0xff000080, 40)
-    end
-
-    # Set up an array of four text fields.
-    @text_fields = Array.new(NUM_FIELDS) do |index|
-      TextField.new(self, Point(WIDTH - 80, 30 + index * 40),
-                    INPUT_DEFAULTS[index])
-    end
+    setup_labels
+    setuo_fields
 
     @diagram = Gosu::Image.new('../media/Astable.png')
 
@@ -62,6 +52,22 @@ class FirstCalc < Gosu::Window
 
   private
 
+  def setup_labels
+    font = Gosu::Font.new(18, name: Gosu.default_font_name)
+
+    @labels = LabelsRenderer.new do |labels|
+      labels.add_block(INPUT_LABELS, INPUT_TOP_LEFT, font, 0xff000000, 40)
+      labels.add_block(RESULT_LABELS, RESULT_TOP_LEFT, font, 0xff000080, 40)
+    end
+  end
+
+  def setup_fields
+    @text_fields = Array.new(NUM_FIELDS) do |index|
+      TextField.new(self, Point(WIDTH - 80, 30 + index * 40),
+                    INPUT_DEFAULTS[index])
+    end
+  end
+
   def calculate_and_move_on
     index       = @text_fields.index(text_input) || -1
     next_field  = (index + tab_delta) % NUM_FIELDS
@@ -72,7 +78,7 @@ class FirstCalc < Gosu::Window
     else
       calculate_resistors_from_period
     end
-#    puts "RA: #{@calculator.ra_value}, RB: #{@calculator.rb_value}"
+    # puts "RA: #{@calculator.ra_value}, RB: #{@calculator.rb_value}"
   end
 
   def calculate_resistors_from_frequency
@@ -90,7 +96,7 @@ class FirstCalc < Gosu::Window
   def load_duty_c1
     @calculator.cap_value  = text_field_value(C1_INDEX)
     @calculator.duty_ratio = text_field_value(DUTY_INDEX)
-#    puts "LDC1: #{@calculator.cap_value}, #{@calculator.duty_ratio_percent}"
+    # puts "LDC1: #{@calculator.cap_value}, #{@calculator.duty_ratio_percent}"
   end
 
   def text_field_value(index)

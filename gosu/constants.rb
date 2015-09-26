@@ -23,7 +23,9 @@ module Constants
 
   # Some constants that define the appearance of the text fields.
 
-  SELECTION_COLOR = 0xcc88ffff      # Bright Cyan
   BOTTOM_PAD      = 3
   REST_PAD        = 4
+
+  # Selection is Bright Cyan
+  SELECTION_COLOR = 0xcc88ffff
 end
