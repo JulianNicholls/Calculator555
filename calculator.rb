@@ -110,7 +110,7 @@ class Calculator555
   end
 
   def check_resistors
-    fail 'R1 and R2 must be set' if r1_value.nil? || r2_value.nil?
+    fail 'R1 and R2 must be set' unless r1_value && r2_value
   end
 
   def interpret(value, unit)

@@ -52,9 +52,12 @@ class Calc555Resistors < Minitest::Test
     assert_in_delta 1312, @calc.r1_value, 1
   end
 
-  def test_out_of_range_duty_ratio
+  def test_out_of_range_duty_ratio_low
     assert_raises(Exception) { @calc.duty_ratio = 0.49 }
     assert_raises(Exception) { @calc.duty_ratio = 49 }
+  end
+
+  def test_out_of_range_duty_ratio_high
     assert_raises(Exception) { @calc.duty_ratio = 1.01 }
     assert_raises(Exception) { @calc.duty_ratio = 101 }
   end
