@@ -5,11 +5,8 @@ require 'term/ansicolor'
 module Term
   # ANSIColor inside Term!
   module ANSIColor
+    # :reek:FeatureEnvy
     def highlight(str, high = yellow, reset = white)
-      high + str + reset
-    end
-
-    def highlight_tilde(str, high = yellow, reset = white)
       parts = str.split(/~/)
       colours = [reset, high].cycle
       parts.map { |part| colours.next + part }.join ''
@@ -34,22 +31,22 @@ class Calc555Results
   private
 
   def show_frequency
-    printf 'Frequency:  ' + highlight('%5.1fHz  ') + '(' +
-      highlight('%.1fms') + white + ")\n",
+    printf highlight("frequency:  ~%5.1fHz~  (~%.1fms~)\n"),
            @calc.frequency, @calc.period_ms
   end
 
   def show_duty_cycle
-    printf 'Duty Ratio: ' + highlight('%5.1f%%') + '   (th: ' +
-      highlight('%5.1fms') + ', tl: ' + highlight('%5.1fms') + ")\n\n",
-           @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms
+    printf(
+      highlight("Duty Ratio: ~%5.1f%%~   (th: ~%5.1fms~, tl: ~%5.1fms~)\n\n"),
+      @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms)
   end
 
   def show_resistors
-    puts 'Resistors - R1: ' + highlight(resistor_value(@calc.r1_value)) +
-      "\n            R2: " + highlight(resistor_value(@calc.r2_value))
+    puts highlight("Resistors - R1: ~#{resistor_value(@calc.r1_value)}~") +
+      highlight("\n            R2: ~#{resistor_value(@calc.r2_value)}")
   end
 
+  # :reek:UtilityFunction
   def resistor_value(value)
     if value < 5_000.0
       value.round.to_s + ' Ω'

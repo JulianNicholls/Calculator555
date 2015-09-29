@@ -31,19 +31,16 @@ class TextCalculator
   private
 
   def run_prompt
-    "\nEnter Duty Ratio and (" +
-      highlight('P') + ')eriod or (' +
-      highlight('F') + ')requency, (' +
-      highlight('R') + ')esistor values, or (' +
-      highlight('Q') + ')uit'
+    highlight("\nEnter Duty Ratio and (~P~)eriod or (~F~)requency, " \
+              '(~R~)esistor values, or (~Q~)uit')
   end
 
   def show_title
-    puts highlight("555 Timer Calculator\n====================\n", cyan)
+    puts highlight("~555 Timer Calculator\n====================\n", cyan)
   end
 
   def initialize_calculator
-    entered_cap = input('Capacitor: (' + highlight('22µF') + ')')
+    entered_cap = input(highlight('Capacitor: (~22µF~)'))
 
     cap = entered_cap == '' ? [22, 'µF'] : decode_cap_entry(entered_cap)
 
@@ -78,7 +75,7 @@ class TextCalculator
   end
 
   def show_results
-    puts highlight("\n    Calculated Values\n    =================\n", cyan)
+    puts highlight("\n    ~Calculated Values\n    =================\n", cyan)
 
     Calc555Results.new(@calc).render
   end

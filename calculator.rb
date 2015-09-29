@@ -1,4 +1,6 @@
 # Calculate the parameters for a 555 timer.
+# :reek:TooManyMethods
+# :reek:UncommunicativeModuleName
 class Calculator555
   MULTIPLIER = 0.693
 
@@ -54,12 +56,12 @@ class Calculator555
 
   # A value less than 1 represents a proportion. Any other value is taken to
   # be a percentage.
-  def duty_ratio=(value)
-    @duty = (value < 1.0) ? value : (value / 100.0)
+  def duty_ratio=(dr_value)
+    @duty = (dr_value < 1.0) ? dr_value : (dr_value / 100.0)
 
     fail 'Duty Cycle must be from 50% to 100%' if @duty < 0.5 || @duty > 1.0
 
-    return if @period.nil?
+    return unless @period
 
     calc_resistors
   end
@@ -67,10 +69,10 @@ class Calculator555
   # A value less than 1 is assumed to be a fraction of a second, any larger
   # value is assumed to be ms. This means that a period of say 1.1s could be
   # specified as 1100 (ms).
-  def period=(value)
-    @period = (value < 1.0) ? value : (value / 1000.0)
+  def period=(p_value)
+    @period = (p_value < 1.0) ? p_value : (p_value / 1000.0)
 
-    return if @duty.nil?
+    return unless @duty
 
     calc_resistors
   end
