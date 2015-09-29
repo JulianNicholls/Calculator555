@@ -1,19 +1,12 @@
 #!/usr/bin/env ruby -I.
 
-# This example demonstrates the use of the TextInput functionality.
-# One can tab through, or click into the text fields and change its contents.
-# At its most basic form, you only need to create a new TextInput instance and
-# set the text_input attribute of your window to it. Until you set this
-# attribute to nil again, the TextInput object will build a text that can be
-# accessed via TextInput#text.
-
 require 'text_input'
 
 require '../calculator'
 require 'label_render'
 require 'constants'
 
-# Test harness for textInput field
+# Calculator UI
 class FirstCalc < Gosu::Window
   include GosuEnhanced
   include Constants

@@ -101,9 +101,6 @@ class TextField < Gosu::TextInput
   def draw_selection
     return unless active_field? && sel_x != pos_x
 
-    sel_left  = [sel_x, pos_x].min
-    sel_width = [sel_x, pos_x].max - sel_left
-
     @window.draw_rectangle(
       @point.offset(sel_left, 0), Size(sel_width, height), 0, SELECTION_COLOR
     )
@@ -120,6 +117,15 @@ class TextField < Gosu::TextInput
 
   def full_text_width
     @font.text_width(text)
+  end
+
+  # Calculate the position and width of the selection rectangle, if any
+  def sel_left
+    [sel_x, pos_x].min
+  end
+
+  def sel_width
+    [sel_x, pos_x].max - sel_left
   end
 
   # Calculate the position of the caret and the selection start.
