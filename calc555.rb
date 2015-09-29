@@ -22,7 +22,7 @@ class TextCalculator
     initialize_calculator
 
     loop do
-      op = input(run_prompt)[0].upcase.to_sym
+      op = input_op(run_prompt)
 
       instance_exec(&FUNCTIONS.fetch(op, UNRECOGNISED))
     end
@@ -59,7 +59,7 @@ class TextCalculator
 
   def calculate_resistors_from_period
     # Allow 10us to 1 minute
-    @calc.period = input_float("\nEnter the Period in ms", 0.000001, 60_000)
+    @calc.period = input_float("\nEnter the Period in ms", 0.00001, 60_000)
     enter_duty_ratio
 
     show_results
@@ -67,14 +67,14 @@ class TextCalculator
 
   def calculate_resistors_from_frequency
     # Allow 1 in 60 seconds up to 100kHz
-    @calc.frequency = input_float("\nEnter the Frequency in Hz", 0.016, 100_000)
+    @calc.frequency = input_float("\nEnter the Frequency in Hz", 1, 100_000)
     enter_duty_ratio
 
     show_results
   end
 
   def enter_duty_ratio
-    @calc.duty_ratio = input_float('Enter the Duty Ratio', 50, 99.9)
+    @calc.duty_ratio = input_float('Enter the Duty Ratio', 50, 99.99)
   end
 
   def show_results
@@ -89,14 +89,19 @@ class TextCalculator
     $stdin.gets.chomp
   end
 
+  def input_op(prompt)
+    input(prompt)[0].upcase.to_sym
+  end
+
   def input_float(prompt, min = 0.0, max = 10.0**25)
     loop do
       value = input(prompt).to_f
 
       return value if value.between?(min, max)
 
-      print "\n" + highlight('The value must be between ', red, yellow) +
-        "#{min}" + highlight(' and ', red, yellow) + "#{max}\n"
+      puts "\n" +
+        highlight_tilde("The value must be between ~#{min}~ and ~#{max}",
+                        reset + yellow, bold + red)
     end
   end
 
