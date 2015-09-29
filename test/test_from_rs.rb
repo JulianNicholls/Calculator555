@@ -27,25 +27,25 @@ class Calc555FromResistors < Minitest::Test
     assert_in_delta 0.098, @calc.tl, 0.0005
   end
 
-  def test_tl_without_resistors_set
+  def test_tl_without_r2_set
     calc = Calculator555.new(22)
-    assert_raises(Exception) { calc.tl }
-
     @calc.r1_value = 402
     assert_raises(Exception) { calc.tl }
+  end
 
+  def test_tl_without_r1_set
     calc = Calculator555.new(22)
     @calc.r2_value = 402
     assert_raises(Exception) { calc.tl }
   end
 
-  def test_th_without_resistors_set
+  def test_th_without_r2_set
     calc = Calculator555.new(22)
-    assert_raises(Exception) { calc.th }
-
     @calc.r1_value = 402
     assert_raises(Exception) { calc.th }
+  end
 
+  def test_th_without_r1_set
     calc = Calculator555.new(22)
     @calc.r2_value = 402
     assert_raises(Exception) { calc.th }
