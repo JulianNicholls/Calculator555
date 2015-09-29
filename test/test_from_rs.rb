@@ -4,6 +4,7 @@ require 'minitest/pride'
 require './calculator'
 
 # Test class for Calculator555 calculations from set resistors
+# :reek:TooManyMethods
 class Calc555FromResistors < Minitest::Test
   def setup
     @calc = Calculator555.new(22)
