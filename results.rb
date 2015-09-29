@@ -8,6 +8,12 @@ module Term
     def highlight(str, high = yellow, reset = white)
       high + str + reset
     end
+
+    def highlight_tilde(str, high = yellow, reset = white)
+      parts = str.split(/~/)
+      colours = [reset, high].cycle
+      parts.map { |part| colours.next + part }.join ''
+    end
   end
 end
 
@@ -28,9 +34,9 @@ class Calc555Results
   private
 
   def show_frequency
-    printf 'Frequency:  ' + highlight('%5.1fHz  ') +
-      '(' + highlight('%.1fms') + white + ")\n",
-      @calc.frequency, @calc.period_ms
+    printf 'Frequency:  ' + highlight('%5.1fHz  ') + '(' +
+      highlight('%.1fms') + white + ")\n",
+           @calc.frequency, @calc.period_ms
   end
 
   def show_duty_cycle
