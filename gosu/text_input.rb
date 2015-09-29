@@ -14,6 +14,7 @@ require 'constants'
 # built upon it.
 
 # Text field class
+# :reek:TooManyMethods
 class TextField < Gosu::TextInput
   include GosuEnhanced
   include Constants
@@ -31,6 +32,7 @@ class TextField < Gosu::TextInput
   end
 
   # Restrict the text to minus (not actually needed), decimal point, and 0-9
+  # :reek:UtilityFunction
   def filter(text)
     text.match(/[0-9\-.]*/)
   end
@@ -74,6 +76,7 @@ class TextField < Gosu::TextInput
 
   private
 
+  # :reek:UtilityFunction
   def tf_default_font
     Gosu::Font.new(18, name: Gosu.default_font_name)
   end

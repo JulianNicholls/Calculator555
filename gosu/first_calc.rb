@@ -16,7 +16,7 @@ class FirstCalc < Gosu::Window
     self.caption = 'First 555 Calculator'
 
     setup_labels
-    setuo_fields
+    setup_fields
 
     @diagram = Gosu::Image.new('../media/Astable.png')
 
@@ -48,9 +48,9 @@ class FirstCalc < Gosu::Window
   def setup_labels
     font = Gosu::Font.new(18, name: Gosu.default_font_name)
 
-    @labels = LabelsRenderer.new do |labels|
-      labels.add_block(INPUT_LABELS, INPUT_TOP_LEFT, font, 0xff000000, 40)
-      labels.add_block(RESULT_LABELS, RESULT_TOP_LEFT, font, 0xff000080, 40)
+    @labels = LabelsRenderer.new do
+      add INPUT_LABELS, INPUT_TOP_LEFT, font, 0xff000000, 40
+      add RESULT_LABELS, RESULT_TOP_LEFT, font, 0xff000080, 40
     end
   end
 
@@ -86,6 +86,7 @@ class FirstCalc < Gosu::Window
     @text_fields[HZ_INDEX].text = @calculator.frequency
   end
 
+  # :reek:UncommunicativeMethodName
   def load_duty_c1
     @calculator.cap_value  = text_field_value(C1_INDEX)
     @calculator.duty_ratio = text_field_value(DUTY_INDEX)
@@ -109,7 +110,7 @@ class FirstCalc < Gosu::Window
     end
 
     # Advanced: Move caret to clicked position
-    text_input.move_caret(mouse_x) unless text_input.nil?
+    text_input.move_caret(mouse_x) if text_input
   end
 
   # Shift-Tab moves to the previous field

@@ -12,16 +12,20 @@ end
 
 # Label block renderer
 class LabelsRenderer
-  def initialize
+  def initialize(&cmds)
     @blocks = []
 
-    yield self if block_given?
+    instance_exec &cmds if block_given?
   end
 
+  # :reek:LongParameterList: { max_params: 5 }
   def add_block(texts, top_left, font, colour, leading = 0)
     @blocks << LabelBlock.new(
       texts, top_left, font, colour, leading != 0 ? leading : font.height)
   end
+
+  alias_method :add, :add_block
+  alias_method :add_labels, :add_block
 
   def process_blocks
     @blocks.each(&:render)
