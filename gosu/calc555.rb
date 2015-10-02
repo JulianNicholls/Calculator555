@@ -3,17 +3,18 @@
 require 'text_input'
 
 require '../calculator'
+require '../rformat'
 require 'label_render'
 require 'constants'
 
 # Calculator UI
-class FirstCalc < Gosu::Window
+class GosuCalculator < Gosu::Window
   include GosuEnhanced
   include Constants
 
   def initialize
     super(WIDTH, HEIGHT, false)
-    self.caption = 'First 555 Calculator'
+    self.caption = '555 Timer Calculator'
 
     setup_labels
     setup_fields
@@ -33,6 +34,7 @@ class FirstCalc < Gosu::Window
 
     @labels.process_blocks
     @text_fields.each(&:draw)
+    draw_resistor_values
   end
 
   def button_down(id)
@@ -46,11 +48,12 @@ class FirstCalc < Gosu::Window
   private
 
   def setup_labels
-    font = Gosu::Font.new(18, name: Gosu.default_font_name)
+    @font = Gosu::Font.new(18, name: Gosu.default_font_name)
+    font  = @font
 
     @labels = LabelsRenderer.new do
-      add INPUT_LABELS, INPUT_TOP_LEFT, font, 0xff000000, 40
-      add RESULT_LABELS, RESULT_TOP_LEFT, font, 0xff000080, 40
+      add INPUT_LABELS, INPUT_TOP_LEFT, font, Gosu::Color::BLACK, 40
+      add RESULT_LABELS, RESULT_TOP_LEFT, font, Gosu::Color::BLACK, 40
     end
   end
 
@@ -71,7 +74,6 @@ class FirstCalc < Gosu::Window
     else
       calculate_resistors_from_period
     end
-    # puts "RA: #{@calculator.ra_value}, RB: #{@calculator.rb_value}"
   end
 
   def calculate_resistors_from_frequency
@@ -90,7 +92,13 @@ class FirstCalc < Gosu::Window
   def load_duty_c1
     @calculator.cap_value  = text_field_value(C1_INDEX)
     @calculator.duty_ratio = text_field_value(DUTY_INDEX)
-    # puts "LDC1: #{@calculator.cap_value}, #{@calculator.duty_ratio_percent}"
+  end
+
+  def draw_resistor_values
+    return unless @calculator.r1_value
+
+    @font.draw(ResistorFormatter.str(@calculator.r1_value), WIDTH - 80, RESULT_TOP_LEFT.y, 1, 1, 1, Gosu::Color::BLUE)
+    @font.draw(ResistorFormatter.str(@calculator.r2_value), WIDTH - 80, RESULT_TOP_LEFT.y + 40, 1, 1, 1, Gosu::Color::BLUE)
   end
 
   def text_field_value(index)
@@ -119,4 +127,4 @@ class FirstCalc < Gosu::Window
   end
 end
 
-FirstCalc.new.show
+GosuCalculator.new.show
