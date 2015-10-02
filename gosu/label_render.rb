@@ -15,7 +15,7 @@ class LabelsRenderer
   def initialize(&cmds)
     @blocks = []
 
-    instance_exec &cmds if block_given?
+    instance_exec(&cmds) if block_given?
   end
 
   # :reek:LongParameterList: { max_params: 5 }

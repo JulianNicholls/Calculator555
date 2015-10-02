@@ -42,7 +42,7 @@ class TextField < Gosu::TextInput
     draw_selection
     draw_caret
 
-    @font.draw(text, @point.x, @point.y, 0, 1, 1, 0xff000000)
+    @font.draw(text, @point.x, @point.y, 0, 1, 1, Gosu::Color::BLACK)
   end
 
   # Potentially grow size
