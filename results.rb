@@ -1,5 +1,6 @@
 require 'calculator'
 require 'term/ansicolor'
+require 'rformat'
 
 # Add a highlighter to the Term::ANSIColor module
 module Term
@@ -42,18 +43,7 @@ class Calc555Results
   end
 
   def show_resistors
-    puts highlight("Resistors - R1: ~#{resistor_value(@calc.r1_value)}~") +
-      highlight("\n            R2: ~#{resistor_value(@calc.r2_value)}")
-  end
-
-  # :reek:UtilityFunction
-  def resistor_value(value)
-    if value < 5_000.0
-      value.round.to_s + ' Ω'
-    elsif value < 1_000_000.0
-      (value / 1_000.0).round(2).to_s + ' kΩ'
-    else
-      (value / 1_000_000.0).round(2).to_s + ' MΩ'
-    end
+    puts highlight("Resistors - R1: ~#{ResistorFormatter.str(@calc.r1_value)}~") +
+      highlight("\n            R2: ~#{ResistorFormatter.str(@calc.r2_value)}")
   end
 end
