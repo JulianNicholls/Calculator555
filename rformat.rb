@@ -1,3 +1,8 @@
+# Resistor value formatter
+#
+# 0-5K    Display in Ohms
+# %k-1M   Display in kOhms to 2DP
+# 1M+     Display in MOhhms to 2DP
 class ResistorFormatter
   def self.str(value)
     if value < 5_000.0
