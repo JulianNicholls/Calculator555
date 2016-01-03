@@ -54,8 +54,8 @@ class Calc555Resistors < Minitest::Test
 
   def test_calculate_resistors_duty_ratio_percent_large_frequency
     calc = Calculator555.new(100, 'nf')
-    calc.duty_ratio = 51     # 51%
-    calc.frequency  = 32768  # 32768 Hz
+    calc.duty_ratio = 51      # 51%
+    calc.frequency  = 32_768  # 32768 Hz
 
     assert_in_delta 216, calc.r2_value, 1
     assert_in_delta 9, calc.r1_value, 1
@@ -78,11 +78,11 @@ class Calc555Resistors < Minitest::Test
   end
 
   def test_stability_with_really_large_frequency
-    @calc.duty_ratio = 55     # 55%
-    @calc.frequency  = 32768  # 32768 Hz
+    @calc.duty_ratio = 55      # 55%
+    @calc.frequency  = 32_768  # 32768 Hz
 
     assert_in_delta 0.00003, @calc.period, 0.00001
-    assert_equal 32768, @calc.frequency
+    assert_equal 32_768, @calc.frequency
   end
 
   # :reek:DuplicateMethodCall: { max_calls: 3 }
