@@ -8,6 +8,8 @@ class Calculator555
   attr_accessor :r1_value, :r2_value
 
   def initialize(capacitor, unit = 'µF')
+    raise 'Unit cannot be nil' unless unit
+
     @cap_value = interpret(capacitor.to_f, unit)
   end
 
@@ -25,8 +27,8 @@ class Calculator555
     (1.0 / period).round(2)
   end
 
-  alias_method :Hz, :hz
-  alias_method :frequency, :hz
+  alias Hz hz
+  alias frequency hz
 
   def th
     check_resistors
@@ -59,7 +61,7 @@ class Calculator555
   def duty_ratio=(dr_value)
     @duty = (dr_value < 1.0) ? dr_value : (dr_value / 100.0)
 
-    fail 'Duty Cycle must be from 50% to 100%' if @duty < 0.5 || @duty > 1.0
+    raise 'Duty Cycle must be from 50% to 100%' if @duty < 0.5 || @duty > 1.0
 
     return unless @period
 
@@ -81,7 +83,7 @@ class Calculator555
     self.period = 1.0 / value
   end
 
-  alias_method :frequency=, :hz=
+  alias frequency= hz=
 
   def ra_value
     r1_value
@@ -112,11 +114,11 @@ class Calculator555
   end
 
   def check_resistors
-    fail 'R1 and R2 must be set' unless r1_value && r2_value
+    raise 'R1 and R2 must be set' unless r1_value && r2_value
   end
 
   def interpret(value, unit)
-    fail 'Bad Unit: #{unit}' unless unit =~ /[upnµ][fF]/
+    raise 'Bad Unit: #{unit}' unless unit =~ /[upnµ][fF]/
 
     case unit[0].downcase
     when 'p' then value * 10**-12   # Pico

@@ -13,7 +13,7 @@ class TextCalculator
     P:  -> { calculate_resistors_from_period },
     F:  -> { calculate_resistors_from_frequency },
     Q:  -> { exit }
-  }
+  }.freeze
 
   UNRECOGNISED = -> { puts "\nUnrecognised Option" }
 
@@ -28,6 +28,12 @@ class TextCalculator
     end
   end
 
+  def decode_cap_entry(entry)
+    parts = /(?<value>\d+)\s*(?<unit>[µupn][fF])?/.match entry
+
+    [parts[:value].to_i, parts[:unit] || 'µF']
+  end
+
   private
 
   def run_prompt
@@ -36,7 +42,7 @@ class TextCalculator
   end
 
   def show_title
-    puts highlight("~555 Timer Calculator\n====================\n", cyan)
+    puts highlight("~    555 Timer Calculator\n    ====================\n\n", cyan)
   end
 
   def initialize_calculator
@@ -75,7 +81,7 @@ class TextCalculator
   end
 
   def show_results
-    puts highlight("\n    ~Calculated Values\n    =================\n", cyan)
+    puts highlight("\n    ~Calculated Values\n    =================\n\n", cyan)
 
     Calc555Results.new(@calc).render
   end
@@ -97,16 +103,12 @@ class TextCalculator
       return value if value.between?(min, max)
 
       puts "\n" +
-        highlight_tilde("The value must be between ~#{min}~ and ~#{max}",
-                        reset + yellow, bold + red)
+           highlight_tilde("The value must be between ~#{min}~ and ~#{max}",
+                           reset + yellow, bold + red)
     end
-  end
-
-  def decode_cap_entry(entry)
-    parts = /(?<value>\d+)\s*(?<unit>[µupn][fF])/.match entry
-
-    [parts[:value].to_i, parts[:unit]]
   end
 end
 
-TextCalculator.new.run
+if $PROGRAM_NAME == __FILE__
+  TextCalculator.new.run
+end

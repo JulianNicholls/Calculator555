@@ -44,7 +44,7 @@ class Calc555Results
 
   def show_resistors
     puts highlight("Resistors - R1: ~#{ResistorFormatter.str r1_value}~") +
-      highlight("\n            R2: ~#{ResistorFormatter.str r2_value}")
+         highlight("\n            R2: ~#{ResistorFormatter.str r2_value}")
   end
 
   def r1_value
