@@ -24,8 +24,8 @@ class LabelsRenderer
       texts, top_left, font, colour, leading != 0 ? leading : font.height)
   end
 
-  alias_method :add, :add_block
-  alias_method :add_labels, :add_block
+  alias add add_block
+  alias add_labels add_block
 
   def process_blocks
     @blocks.each(&:render)

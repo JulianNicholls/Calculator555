@@ -97,8 +97,10 @@ class GosuCalculator < Gosu::Window
   def draw_resistor_values
     return unless @calculator.r1_value
 
-    @font.draw(ResistorFormatter.str(@calculator.r1_value), WIDTH - 80, RESULT_TOP_LEFT.y, 1, 1, 1, Gosu::Color::BLUE)
-    @font.draw(ResistorFormatter.str(@calculator.r2_value), WIDTH - 80, RESULT_TOP_LEFT.y + 40, 1, 1, 1, Gosu::Color::BLUE)
+    @font.draw(ResistorFormatter.str(@calculator.r1_value), WIDTH - 80,
+               RESULT_TOP_LEFT.y, 1, 1, 1, Gosu::Color::BLUE)
+    @font.draw(ResistorFormatter.str(@calculator.r2_value), WIDTH - 80,
+               RESULT_TOP_LEFT.y + 40, 1, 1, 1, Gosu::Color::BLUE)
   end
 
   def text_field_value(index)
