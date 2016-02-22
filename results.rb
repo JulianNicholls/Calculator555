@@ -32,14 +32,25 @@ class Calc555Results
   private
 
   def show_frequency
-    printf highlight("frequency:  ~%5.1fHz~  (~%.1fms~)\n"),
-           @calc.frequency, @calc.period_ms
+    if @calc.frequency > 999.0
+      printf highlight("Frequency:   ~%6.3fkHz~  (~%.1fµs~)\n"),
+             @calc.frequency / 1000.0, @calc.period_ms * 1000.0
+    else
+      printf highlight("Frequency:  ~%5.1fHz~  (~%.1fms~)\n"),
+             @calc.frequency, @calc.period_ms
+    end
   end
 
   def show_duty_cycle
-    printf(
-      highlight("Duty Ratio: ~%5.1f%%~   (th: ~%5.1fms~, tl: ~%5.1fms~)\n\n"),
-      @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms)
+    if @calc.frequency > 999.0
+      printf(
+        highlight("Duty Ratio: ~%5.1f%%~   (th: ~%.3fµs~, tl: ~%.3fµs~)\n\n"),
+        @calc.duty_ratio_percent, @calc.th_ms * 1000.0, @calc.tl_ms * 1000.0)
+    else
+      printf(
+        highlight("Duty Ratio: ~%5.1f%%~   (th: ~%5.1fms~, tl: ~%5.1fms~)\n\n"),
+        @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms)
+    end
   end
 
   def show_resistors
