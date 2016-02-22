@@ -61,17 +61,17 @@ class Calc555FromResistors < Minitest::Test
   end
 
   def test_period_with_explicit_resistors
-    assert_in_delta 0.202, @calc.period, 0.0005
+    assert_in_delta 0.201, @calc.period, 0.0005
   end
 
   def test_period_ms
-    assert_in_delta 202, @calc.period_ms, 0.5
+    assert_in_delta 201, @calc.period_ms, 0.5
   end
 
   def test_frequency_hzs_with_explicit_resistors
-    assert_in_delta 4.95, @calc.hz, 0.0005
-    assert_in_delta 4.95, @calc.Hz, 0.0005
-    assert_in_delta 4.95, @calc.frequency, 0.0005
+    assert_in_delta 4.968, @calc.hz, 0.0005
+    assert_in_delta 4.968, @calc.Hz, 0.0005
+    assert_in_delta 4.968, @calc.frequency, 0.0005
   end
 
   def test_duty_ratio_with_explicit_resistors
