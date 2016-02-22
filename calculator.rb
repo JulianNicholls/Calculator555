@@ -24,7 +24,7 @@ class Calculator555
   end
 
   def hz
-    (1.0 / period).round(2)
+    (1.0 / period)
   end
 
   alias Hz hz
@@ -32,7 +32,7 @@ class Calculator555
 
   def th
     check_resistors
-    (c_factor * (r1_value + r2_value)).round(3)
+    (c_factor * (r1_value + r2_value))
   end
 
   def th_ms
@@ -41,7 +41,7 @@ class Calculator555
 
   def tl
     check_resistors
-    (c_factor * r2_value).round(3)
+    (c_factor * r2_value)
   end
 
   def tl_ms
@@ -49,7 +49,7 @@ class Calculator555
   end
 
   def duty_ratio
-    (th / (th + tl)).round(3)
+    (th / (th + tl))
   end
 
   def duty_ratio_percent
@@ -105,8 +105,8 @@ class Calculator555
     new_th = @period * @duty
     new_tl = @period - new_th
 
-    self.r2_value = (new_tl / c_factor).round(1)
-    self.r1_value = ((new_th / c_factor) - r2_value).round(1)
+    self.r2_value = (new_tl / c_factor)
+    self.r1_value = ((new_th / c_factor) - r2_value)
   end
 
   def c_factor
