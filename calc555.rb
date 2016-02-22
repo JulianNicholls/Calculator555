@@ -9,9 +9,10 @@ class TextCalculator
   include Term::ANSIColor
 
   FUNCTIONS = {
-    R:  -> { calculate_cycle_times },
-    P:  -> { calculate_resistors_from_period },
+    C:  -> { initialize_calculator },
     F:  -> { calculate_resistors_from_frequency },
+    P:  -> { calculate_resistors_from_period },
+    R:  -> { calculate_cycle_times },
     Q:  -> { exit }
   }.freeze
 
@@ -29,16 +30,20 @@ class TextCalculator
   end
 
   def decode_cap_entry(entry)
-    parts = /(?<value>\d+)\s*(?<unit>[µupn][fF])?/.match entry
+    parts = /(?<value>\d+)\s*(?<unit>[µupn][fF]?)?/.match entry
 
-    [parts[:value].to_i, parts[:unit] || 'µF']
+    unit = parts[:unit] || 'µF'
+
+    unit += 'F' if unit.size == 1
+
+    [parts[:value].to_i, unit]
   end
 
   private
 
   def run_prompt
-    highlight("\nEnter Duty Ratio and (~P~)eriod or (~F~)requency, " \
-              '(~R~)esistor values, or (~Q~)uit')
+    highlight("\nEnter Duty Ratio and (~P~)eriod or (~F~)requency,\n" \
+              "(~R~)esistor values, (~C~)hange Capacitor or\n(~Q~)uit")
   end
 
   def show_title
@@ -103,8 +108,8 @@ class TextCalculator
       return value if value.between?(min, max)
 
       puts "\n" +
-           highlight_tilde("The value must be between ~#{min}~ and ~#{max}",
-                           reset + yellow, bold + red)
+           highlight("The value must be between ~#{min}~ and ~#{max}",
+                     reset + yellow, bold + red)
     end
   end
 end
