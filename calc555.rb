@@ -47,7 +47,7 @@ class TextCalculator
   end
 
   def show_title
-    puts highlight("~    555 Timer Calculator\n    ====================\n\n", cyan)
+    puts highlight("~  555 Timer Calculator\n  ====================\n\n", cyan)
   end
 
   def initialize_calculator
@@ -114,6 +114,5 @@ class TextCalculator
   end
 end
 
-if $PROGRAM_NAME == __FILE__
-  TextCalculator.new.run
-end
+# Run the interactive calculator if called from here.
+TextCalculator.new.run if $PROGRAM_NAME == __FILE__

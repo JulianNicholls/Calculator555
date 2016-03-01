@@ -6,14 +6,10 @@
 # 1M+     Display in MOhhms to 2DP
 class ResistorFormatter
   def self.str(value)
-    if value < 10.0
-      value.round(3).to_s +  ' Ω - Warning Low Value'
-    elsif value < 5_000.0
-      value.round.to_s + ' Ω'
-    elsif value < 1_000_000.0
-      (value / 1_000.0).round(2).to_s + ' kΩ'
-    else
-      (value / 1_000_000.0).round(2).to_s + ' MΩ'
-    end
+    return value.round(3).to_s + ' Ω - Warning Low Value' if value < 10.0
+    return value.round.to_s + ' Ω' if value < 5_000.0
+    return (value / 1_000.0).round(2).to_s + ' kΩ' if value < 1_000_000.0
+
+    (value / 1_000_000.0).round(2).to_s + ' MΩ'
   end
 end
