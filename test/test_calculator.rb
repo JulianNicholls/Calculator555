@@ -1,7 +1,9 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 
-require './calculator'
+$LOAD_PATH.unshift(File.expand_path('.'))
+
+require 'calculator'
 
 # Test class for Calculate555 resistor value calculations from
 # period/frequency and duty cycle.
