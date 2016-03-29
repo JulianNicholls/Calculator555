@@ -10,8 +10,7 @@ require 'calculator'
 class Calc555Resistors < Minitest::Test
   def setup
     @calc = Calculator555.new(22)
-    @calc.r1_value = 402
-    @calc.r2_value = 6400
+    @calc.set_resistors(402, 6400)
   end
 
   def test_calculate_resistors_duty_ratio_period

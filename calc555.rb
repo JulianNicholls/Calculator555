@@ -4,19 +4,6 @@ require 'calculator'
 require 'term/ansicolor'
 require 'results'
 
-# Capacitor Decoder
-class CapacitorDecoder
-  def self.call(entry)
-    parts = /(?<value>\d+)\s*(?<unit>[µupn][fF]?)?/.match entry
-
-    unit = parts[:unit] || 'µF'
-
-    unit += 'F' if unit.size == 1
-
-    [parts[:value].to_i, unit]
-  end
-end
-
 # A text-based 555 timer calculator
 class TextCalculator
   include Term::ANSIColor
@@ -62,8 +49,10 @@ class TextCalculator
   end
 
   def calculate_cycle_times
-    @calc.r1_value = input_float("\nEnter the R1 value", 1)
-    @calc.r2_value = input_float('Enter the R2 value', 1)
+    r1_value = input_float("\nEnter the R1 value", 1)
+    r2_value = input_float('Enter the R2 value', 1)
+
+    @calc.set_resistors(r1_value, r2_value)
 
     show_results
   end
