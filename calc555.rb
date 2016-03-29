@@ -4,6 +4,19 @@ require 'calculator'
 require 'term/ansicolor'
 require 'results'
 
+# Capacitor Decoder
+class CapacitorDecoder
+  def self.call(entry)
+    parts = /(?<value>\d+)\s*(?<unit>[µupn][fF]?)?/.match entry
+
+    unit = parts[:unit] || 'µF'
+
+    unit += 'F' if unit.size == 1
+
+    [parts[:value].to_i, unit]
+  end
+end
+
 # A text-based 555 timer calculator
 class TextCalculator
   include Term::ANSIColor
@@ -29,16 +42,6 @@ class TextCalculator
     end
   end
 
-  def decode_cap_entry(entry)
-    parts = /(?<value>\d+)\s*(?<unit>[µupn][fF]?)?/.match entry
-
-    unit = parts[:unit] || 'µF'
-
-    unit += 'F' if unit.size == 1
-
-    [parts[:value].to_i, unit]
-  end
-
   private
 
   def run_prompt
@@ -53,7 +56,7 @@ class TextCalculator
   def initialize_calculator
     entered_cap = input(highlight('Capacitor: (~22µF~)'))
 
-    cap = entered_cap == '' ? [22, 'µF'] : decode_cap_entry(entered_cap)
+    cap = entered_cap == '' ? [22, 'µF'] : CapacitorDecoder.call(entered_cap)
 
     @calc = Calculator555.new(*cap)
   end
