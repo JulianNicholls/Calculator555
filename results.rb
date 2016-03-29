@@ -32,24 +32,30 @@ class Calc555Results
   private
 
   def show_frequency
-    if @calc.frequency > 999.0
+    freq    = @calc.frequency
+    period  = @calc.period_ms
+
+    if freq > 999.0
       printf highlight("Frequency:   ~%6.3fkHz~  (~%.1fµs~)\n"),
-             @calc.frequency / 1000.0, @calc.period_ms * 1000.0
+             freq / 1000.0, period * 1000.0
     else
-      printf highlight("Frequency:  ~%5.1fHz~  (~%.1fms~)\n"),
-             @calc.frequency, @calc.period_ms
+      printf highlight("Frequency:  ~%5.1fHz~  (~%.1fms~)\n"), freq, period
     end
   end
 
   def show_duty_cycle
+    duty  = @calc.duty_ratio_percent
+    th_ms = @calc.th_ms
+    tl_ms = @calc.tl_ms
+
     if @calc.frequency > 999.0
       printf(
         highlight("Duty Ratio: ~%5.1f%%~   (th: ~%.3fµs~, tl: ~%.3fµs~)\n\n"),
-        @calc.duty_ratio_percent, @calc.th_ms * 1000.0, @calc.tl_ms * 1000.0)
+        duty, th_ms * 1000.0, tl_ms * 1000.0)
     else
       printf(
         highlight("Duty Ratio: ~%5.1f%%~   (th: ~%5.1fms~, tl: ~%5.1fms~)\n\n"),
-        @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms)
+        duty, th_ms, tl_ms)
     end
   end
 
