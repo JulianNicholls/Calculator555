@@ -11,6 +11,7 @@ class Calculator555
     raise 'Unit cannot be nil' unless unit
 
     @cap_value = interpret(capacitor.to_f, unit)
+    @period    = nil
   end
 
   def period
