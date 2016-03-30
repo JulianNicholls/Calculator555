@@ -8,7 +8,7 @@ ResistorPack = Struct.new(:r1, :r2) do
 end
 
 # Calculate the parameters for a 555 timer.
-# : reek:TooManyMethods
+# :reek:TooManyMethods
 # :reek:UncommunicativeModuleName
 class Calculator555
   def initialize(cap_text)
@@ -112,18 +112,19 @@ class Calculator555
   # As with period= above, a value less than 1 is assumed to be a fraction of
   # a Farad. Any other value is assumed to be a number of uF.
   def cap_value=(value)
-    @capacitor = Capacitor.new((value < 1.0) ? value : value * 10**-6)
+    @capacitor = Capacitor.from_absolute_value(value)
   end
 
   private
 
   def calc_resistors
-    new_th = @period * @duty
-    new_tl = @period - new_th
+    new_th    = @period * @duty
+    new_tl    = @period - new_th
+    c_factor  = @capacitor.c_factor
 
-    r2_value = new_tl / @capacitor.c_factor
+    r2_value = new_tl / c_factor
 
-    @res_pack = ResistorPack.new((new_th / @capacitor.c_factor) - r2_value, r2_value)
+    @res_pack = ResistorPack.new((new_th / c_factor) - r2_value, r2_value)
   end
 
   def check_resistors

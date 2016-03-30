@@ -27,6 +27,12 @@ class Capacitor
 
       self.new(value)
     end
+
+    # A value less than 1 is assumed to be a fraction of a Farad.
+    # Any other value is assumed to be a number of uF.
+    def from_absolute_value(value)
+      self.new((value < 1.0) ? value : value * 10**-6)
+    end
   end
 
   def initialize(value)
