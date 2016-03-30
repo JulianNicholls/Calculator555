@@ -82,26 +82,29 @@ class GosuCalculator < Gosu::Window
   def calculate_resistors_from_frequency
     @calculator.frequency = text_field_value(HZ_INDEX)
     load_duty_c1
-    @text_fields[PERIOD_INDEX].text = @calculator.period_ms
+    @text_fields[PERIOD_INDEX].text = @calculator.period_ms.round(2)
   end
 
   def calculate_resistors_from_period
     @calculator.period = text_field_value(PERIOD_INDEX)
     load_duty_c1
-    @text_fields[HZ_INDEX].text = @calculator.frequency
+    @text_fields[HZ_INDEX].text = @calculator.frequency.round(3)
   end
 
-  # : reek:UncommunicativeMethodName
+  # :reek:UncommunicativeMethodName
   def load_duty_c1
     @calculator.cap_value  = text_field_value(C1_INDEX)
     @calculator.duty_ratio = text_field_value(DUTY_INDEX)
   end
 
   def draw_resistor_values
-    @font.draw(ResistorFormatter.str(@calculator.r1_value), WIDTH - 80,
-               RESULT_TOP_LEFT.y, 1, 1, 1, Gosu::Color::BLUE)
-    @font.draw(ResistorFormatter.str(@calculator.r2_value), WIDTH - 80,
-               RESULT_TOP_LEFT.y + 40, 1, 1, 1, Gosu::Color::BLUE)
+    left = WIDTH - 80
+    top  = RESULT_TOP_LEFT.y
+
+    @font.draw(ResistorFormatter.str(@calculator.r1_value), left, top,
+               1, 1, 1, Gosu::Color::BLUE)
+    @font.draw(ResistorFormatter.str(@calculator.r2_value), left, top + 40,
+               1, 1, 1, Gosu::Color::BLUE)
   end
 
   def text_field_value(index)
