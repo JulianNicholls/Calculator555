@@ -3,7 +3,7 @@ require 'minitest/pride'
 
 $LOAD_PATH.unshift(File.expand_path('.'))
 
-require 'calculator'
+require 'capacitor'
 
 # Test class for Capacitor.
 class TestCapacitor < Minitest::Test
