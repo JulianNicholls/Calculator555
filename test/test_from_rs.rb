@@ -28,30 +28,6 @@ class Calc555FromResistors < Minitest::Test
     assert_in_delta 0.098, @calc.tl, 0.0005
   end
 
-  # def test_tl_without_r2_set            # These are no longer valid because the two resistors
-  #   calc = Calculator555.new(22)        # are inextricably linked
-  #   @calc.r1_value = 402
-  #   assert_raises(Exception) { calc.tl }
-  # end
-
-  # def test_tl_without_r1_set
-  #   calc = Calculator555.new(22)
-  #   @calc.r2_value = 402
-  #   assert_raises(Exception) { calc.tl }
-  # end
-
-  # def test_th_without_r2_set
-  #   calc = Calculator555.new(22)
-  #   @calc.r1_value = 402
-  #   assert_raises(Exception) { calc.th }
-  # end
-
-  # def test_th_without_r1_set
-  #   calc = Calculator555.new(22)
-  #   @calc.r2_value = 402
-  #   assert_raises(Exception) { calc.th }
-  # end
-
   def test_th_ms
     assert_in_delta 104, @calc.th_ms, 0.5
   end
