@@ -43,9 +43,9 @@ class TextCalculator
   def initialize_calculator
     entered_cap = input(highlight('Capacitor: (~22µF~)'))
 
-    cap = entered_cap == '' ? [22, 'µF'] : CapacitorDecoder.call(entered_cap)
+    entered_cap = '22µF' if entered_cap == ''
 
-    @calc = Calculator555.new(*cap)
+    @calc = Calculator555.new(entered_cap)
   end
 
   def calculate_cycle_times

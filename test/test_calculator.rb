@@ -9,7 +9,7 @@ require 'calculator'
 # period/frequency and duty cycle.
 class Calc555Resistors < Minitest::Test
   def setup
-    @calc = Calculator555.new(22)
+    @calc = Calculator555.new('22')
     @calc.set_resistors(402, 6400)
   end
 
@@ -54,7 +54,7 @@ class Calc555Resistors < Minitest::Test
   end
 
   def test_calculate_resistors_duty_ratio_percent_large_frequency
-    calc = Calculator555.new(100, 'nf')
+    calc = Calculator555.new('100nf')
     calc.duty_ratio = 51      # 51%
     calc.frequency  = 32_768  # 32768 Hz
 

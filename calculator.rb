@@ -11,10 +11,8 @@ end
 # : reek:TooManyMethods
 # :reek:UncommunicativeModuleName
 class Calculator555
-  def initialize(capacitor, unit = 'µF')
-    raise 'Unit cannot be nil' unless unit
-
-    @capacitor = Capacitor.from_value_and_unit(capacitor.to_f, unit)
+  def initialize(cap_text)
+    @capacitor = Capacitor.from_text(cap_text)
     @period    = nil
     @res_pack  = nil
   end

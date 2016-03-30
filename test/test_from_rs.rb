@@ -7,7 +7,7 @@ require './calculator'
 # :reek:TooManyMethods
 class Calc555FromResistors < Minitest::Test
   def setup
-    @calc = Calculator555.new(22)
+    @calc = Calculator555.new('22')
 
     @calc.set_resistors(402, 6400)
   end
