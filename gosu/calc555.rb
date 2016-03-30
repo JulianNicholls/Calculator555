@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby -I.
 
+$LOAD_PATH.unshift(File.expand_path('..'))
+
 require 'text_input'
 
-require '../calculator'
-require '../rformat'
+require 'calculator'
+require 'rformat'
 require 'label_render'
 require 'constants'
 
@@ -22,6 +24,7 @@ class GosuCalculator < Gosu::Window
     @diagram = Gosu::Image.new('../media/Astable.png')
 
     @calculator = Calculator555.new(INPUT_DEFAULTS[C1_INDEX])
+    calculate_resistors_from_frequency
   end
 
   def needs_cursor?
@@ -88,15 +91,13 @@ class GosuCalculator < Gosu::Window
     @text_fields[HZ_INDEX].text = @calculator.frequency
   end
 
-  # :reek:UncommunicativeMethodName
+  # : reek:UncommunicativeMethodName
   def load_duty_c1
     @calculator.cap_value  = text_field_value(C1_INDEX)
     @calculator.duty_ratio = text_field_value(DUTY_INDEX)
   end
 
   def draw_resistor_values
-    return unless @calculator.r1_value
-
     @font.draw(ResistorFormatter.str(@calculator.r1_value), WIDTH - 80,
                RESULT_TOP_LEFT.y, 1, 1, 1, Gosu::Color::BLUE)
     @font.draw(ResistorFormatter.str(@calculator.r2_value), WIDTH - 80,
@@ -125,7 +126,11 @@ class GosuCalculator < Gosu::Window
 
   # Shift-Tab moves to the previous field
   def tab_delta
-    button_down?(Gosu::KbLeftShift) || button_down?(Gosu::KbRightShift) ? -1 : 1
+     shift_pressed? ? -1 : 1
+  end
+
+  def shift_pressed?
+    button_down?(Gosu::KbLeftShift) || button_down?(Gosu::KbRightShift)
   end
 end
 

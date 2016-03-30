@@ -38,7 +38,8 @@ class TestCapacitor < Minitest::Test
   def test_nf_convert
     calc = Capacitor.from_value_and_unit(47, 'nF')
 
-    assert_in_delta 47.0 * 10**-9, calc.value, 10**-9
+    nano = 10**-9
+    assert_in_delta 47.0 * nano, calc.value, nano
   end
 
   def test_pf_convert
