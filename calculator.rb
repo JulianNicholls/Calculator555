@@ -1,24 +1,40 @@
 # Capacitor Decoder
-class CapacitorDecoder
-  def self.call(entry)
-    parts = /(?<value>\d+)\s*(?<unit>[µupn][fF]?)?/.match entry
+class Capacitor
+  MULTIPLIER = 0.693      # ln(2)
 
-    unit = parts[:unit] || 'µF'
+  attr_reader :value
 
-    unit += 'F' if unit.size == 1
+  class << self
+    def from_text(entry)
+      parts = /(?<value>\d+)\s*(?<unit>[µupn][fF]?)?/.match entry
 
-    [parts[:value].to_i, unit]
+      unit = parts[:unit] || 'µF'
+
+      unit += 'F' if unit.size == 1
+
+      Capacitor.from_value_and_unit(parts[:value].to_i, unit)
+    end
+
+    def from_value_and_unit(value, unit)
+      raise 'Bad Unit: #{unit}' unless unit =~ /[upnµ][fF]?/
+
+      case unit[0].downcase
+      when 'p' then value *= 10**-12   # Pico
+      when 'n' then value *= 10**-9    # Nano
+      else
+        value *= 10**-6                # Micro
+      end
+
+      self.new(value)
+    end
   end
 
-  def self.value(value, unit)
-    raise 'Bad Unit: #{unit}' unless unit =~ /[upnµ][fF]/
+  def initialize(value)
+    @value = value
+  end
 
-    case unit[0].downcase
-    when 'p' then value * 10**-12   # Pico
-    when 'n' then value * 10**-9    # Nano
-    else
-      value * 10**-6                # Micro
-    end
+  def c_factor
+    MULTIPLIER * value
   end
 end
 
@@ -33,14 +49,10 @@ end
 # : reek:TooManyMethods
 # :reek:UncommunicativeModuleName
 class Calculator555
-  MULTIPLIER = 0.693      # ln(2)
-
-  attr_reader :cap_value
-
   def initialize(capacitor, unit = 'µF')
     raise 'Unit cannot be nil' unless unit
 
-    @cap_value = CapacitorDecoder.value(capacitor.to_f, unit)
+    @capacitor = Capacitor.from_value_and_unit(capacitor.to_f, unit)
     @period    = nil
     @res_pack  = nil
   end
@@ -83,7 +95,7 @@ class Calculator555
 
   def th
     check_resistors
-    c_factor * @res_pack.sum
+    @capacitor.c_factor * @res_pack.sum
   end
 
   def th_ms
@@ -93,7 +105,7 @@ class Calculator555
   def tl
     check_resistors
 
-    c_factor * @res_pack.r2
+    @capacitor.c_factor * @res_pack.r2
   end
 
   def tl_ms
@@ -140,7 +152,7 @@ class Calculator555
   # As with period= above, a value less than 1 is assumed to be a fraction of
   # a Farad. Any other value is assumed to be a number of uF.
   def cap_value=(value)
-    @cap_value = (value < 1.0) ? value : value * 10**-6
+    @capacitor = Capacitor.new((value < 1.0) ? value : value * 10**-6)
   end
 
   private
@@ -149,13 +161,9 @@ class Calculator555
     new_th = @period * @duty
     new_tl = @period - new_th
 
-    r2_value = new_tl / c_factor
+    r2_value = new_tl / @capacitor.c_factor
 
-    @res_pack = ResistorPack.new((new_th / c_factor) - r2_value, r2_value)
-  end
-
-  def c_factor
-    MULTIPLIER * cap_value
+    @res_pack = ResistorPack.new((new_th / @capacitor.c_factor) - r2_value, r2_value)
   end
 
   def check_resistors
