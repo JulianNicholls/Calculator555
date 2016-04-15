@@ -66,15 +66,15 @@ class TextCalculator
   end
 
   def calculate_resistors_from_frequency
-    # Allow 1 in 60 seconds up to 100kHz
-    @calc.frequency = input_float("\nEnter the Frequency in Hz", 1, 100_000)
+    # Allow 1 in 10 seconds up to 100kHz
+    @calc.frequency = input_float("\nEnter the Frequency in Hz", 0.1, 100_000)
     enter_duty_ratio
 
     show_results
   end
 
   def enter_duty_ratio
-    @calc.duty_ratio = input_float('Enter the Duty Ratio', 50, 99.99)
+    @calc.duty_ratio = input_float('Enter the Duty Ratio', 0.01, 99.99)
   end
 
   def show_results
