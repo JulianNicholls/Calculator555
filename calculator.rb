@@ -5,6 +5,10 @@ ResistorPack = Struct.new(:r1, :r2) do
   def sum
     r1 + r2
   end
+
+  def add_diode
+    self.r1 += r2
+  end
 end
 
 # Calculate the parameters for a 555 timer.
@@ -55,7 +59,10 @@ class Calculator555
 
   def th
     check_resistors
-    @capacitor.c_factor * @res_pack.sum
+
+    c_factor = @capacitor.c_factor
+
+    @duty < 0.5 ? c_factor * @res_pack.r1 : c_factor * @res_pack.sum
   end
 
   def th_ms
@@ -84,8 +91,6 @@ class Calculator555
   # be a percentage.
   def duty_ratio=(dr_value)
     @duty = (dr_value < 1.0) ? dr_value : (dr_value / 100.0)
-
-    raise 'Duty Cycle must be from 50% to 100%' if @duty < 0.5 || @duty > 1.0
 
     return unless @period
 
@@ -117,6 +122,7 @@ class Calculator555
 
   private
 
+  # :reek:TooManyStatements
   def calc_resistors
     new_th    = @period * @duty
     new_tl    = @period - new_th
@@ -124,7 +130,9 @@ class Calculator555
 
     r2_value = new_tl / c_factor
 
-    @res_pack = ResistorPack.new((new_th / c_factor) - r2_value, r2_value)
+    @res_pack = ResistorPack.new(new_th / c_factor - r2_value, r2_value)
+
+    @res_pack.add_diode if @duty < 0.5
   end
 
   def check_resistors
