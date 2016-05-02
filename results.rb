@@ -54,7 +54,7 @@ class Calc555Results
         duty, th_ms * 1000.0, tl_ms * 1000.0)
     else
       printf(
-        highlight("Duty Ratio: ~%5.1f%%~   (th: ~%5.1fms~, tl: ~%5.1fms~)\n\n"),
+        highlight("Duty Ratio: ~%5.1f%%~   (th: ~%.1fms~, tl: ~%.1fms~)\n\n"),
         duty, th_ms, tl_ms)
     end
   end
