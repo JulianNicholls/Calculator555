@@ -62,7 +62,7 @@ class Calculator555
 
     c_factor = @capacitor.c_factor
 
-    @duty < 0.5 ? c_factor * @res_pack.r1 : c_factor * @res_pack.sum
+    @duty && @duty < 0.5 ? c_factor * @res_pack.r1 : c_factor * @res_pack.sum
   end
 
   def th_ms
