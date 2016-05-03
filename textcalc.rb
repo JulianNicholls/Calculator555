@@ -41,16 +41,18 @@ class TextCalculator
   end
 
   def initialize_calculator
-    entered_cap = input(highlight('Capacitor: (~22µF~)'))
+    entered_cap = input(highlight('Capacitor: (~10µF~)'))
 
-    entered_cap = '22µF' if entered_cap == ''
+    entered_cap = '10µF' if entered_cap == ''
 
     @calc = Calculator555.new(entered_cap)
   end
 
   def calculate_cycle_times
-    r1_value = input_float("\nEnter the R1 value", 1, 500_000_000)
-    r2_value = input_float('Enter the R2 value', 1, 500_000_000)
+    r1_value = input_float("\nEnter the R1 value", 150, 1_000_000,
+                           "Resistors should be between 150Ω and 1MΩ")
+    r2_value = input_float('Enter the R2 value', 150, 1_000_000,
+                           "Resistors should be between 150Ω and 1MΩ")
 
     @calc.set_resistors(r1_value, r2_value)
 
@@ -66,8 +68,8 @@ class TextCalculator
   end
 
   def calculate_resistors_from_frequency
-    # Allow 1 in 10 seconds up to 100kHz
-    @calc.frequency = input_float("\nEnter the Frequency in Hz", 0.1, 100_000)
+    # Allow 1 in 10 seconds up to 300kHz
+    @calc.frequency = input_float("\nEnter the Frequency in Hz", 0.1, 300_000)
     enter_duty_ratio
 
     show_results
@@ -93,15 +95,15 @@ class TextCalculator
     input(prompt)[0].upcase.to_sym
   end
 
-  def input_float(prompt, min = 0.0, max = 10.0**25)
+  # :reek:LongParameterList
+  def input_float(prompt, min = 0.0, max = 10.0**25,
+                  message = "The value must be between ~#{min}~ and ~#{max}")
     loop do
       value = input(prompt).to_f
 
       return value if value.between?(min, max)
 
-      puts "\n" +
-           highlight("The value must be between ~#{min}~ and ~#{max}",
-                     reset + yellow, bold + red)
+      puts "\n" + highlight(message, reset + yellow, bold + red)
     end
   end
 end
