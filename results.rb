@@ -44,24 +44,24 @@ class Calc555Results
   end
 
   def show_duty_cycle
-    duty  = @calc.duty_ratio_percent
-    th_ms = @calc.th_ms
-    tl_ms = @calc.tl_ms
+    return show_above_1khz if @calc.frequency > 999.0
 
-    if @calc.frequency > 999.0
-      printf(
-        highlight("Duty Ratio: ~%5.1f%%~   (th: ~%.3fµs~, tl: ~%.3fµs~)\n\n"),
-        duty, th_ms * 1000.0, tl_ms * 1000.0)
-    else
-      printf(
-        highlight("Duty Ratio: ~%5.1f%%~   (th: ~%.1fms~, tl: ~%.1fms~)\n\n"),
-        duty, th_ms, tl_ms)
-    end
+    printf(
+      highlight("Duty Cycle: ~%5.1f%%~   (th: ~%.1fms~, tl: ~%.1fms~)\n\n"),
+      @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms)
+  end
+
+  def show_above_1khz
+    printf(
+      highlight("Duty Cycle: ~%5.1f%%~   (th: ~%.1fµs~, tl: ~%.1fµs~)\n\n"),
+      @calc.duty_ratio_percent, @calc.th_ms * 1000.0, @calc.tl_ms * 1000.0)
   end
 
   def show_resistors
     puts highlight("Resistors - R1: ~#{ResistorFormatter.str r1_value}~") +
-         highlight("\n            R2: ~#{ResistorFormatter.str r2_value}")
+         highlight("\n            R2: ~#{ResistorFormatter.str r2_value}~\n\n")
+
+    ResistorWarning.new(r1_value, r2_value).show
   end
 
   def r1_value
