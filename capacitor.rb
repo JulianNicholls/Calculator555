@@ -1,6 +1,6 @@
 # Capacitor Class
 class Capacitor
-  MULTIPLIER = 0.693      # ln(2)
+  MULTIPLIER = 0.693 # ln(2)
 
   attr_reader :value
 
@@ -15,23 +15,24 @@ class Capacitor
       Capacitor.from_value_and_unit(parts[:value].to_i, unit)
     end
 
+    # :reek:FeatureEnvy
     def from_value_and_unit(value, unit)
       raise 'Bad Unit: #{unit}' unless unit =~ /[upnµ][fF]?/
 
-      case unit[0].downcase
-      when 'p' then value *= 10**-12   # Pico
-      when 'n' then value *= 10**-9    # Nano
-      else
-        value *= 10**-6                # Micro
-      end
+      value = case unit[0].downcase
+              when 'p' then value * 10**-12   # Pico
+              when 'n' then value * 10**-9    # Nano
+              else value * 10**-6             # Micro
+              end
 
-      self.new(value)
+      new(value)
     end
 
     # A value less than 1 is assumed to be a fraction of a Farad.
     # Any other value is assumed to be a number of uF.
+    # :reek:FeatureEnvy
     def from_absolute_value(value)
-      self.new((value < 1.0) ? value : value * 10**-6)
+      new((value < 1.0) ? value : value * 10**-6)
     end
   end
 
