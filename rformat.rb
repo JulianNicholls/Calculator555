@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Resistor value formatter
 #
 # 0-5K    Display in Ohms
@@ -19,11 +20,11 @@ ResistorWarning = Struct.new(:r1_value, :r2_value) do
   LOW_THRESHOLD   = 150
   HIGH_THRESHOLD  = 1_000_000
 
-  TOO_LOW  = ' is less than 150Ω'.freeze
-  TOO_HIGH = ' is more than 1MΩ'.freeze
+  TOO_LOW  = ' is less than 150Ω'
+  TOO_HIGH = ' is more than 1MΩ'
 
-  DECREASE = ', you should decrease the C1 capacitor.'.freeze
-  INCREASE = ', you should increase the C1 capacitor.'.freeze
+  DECREASE = ', you should decrease the C1 capacitor.'
+  INCREASE = ', you should increase the C1 capacitor.'
 
   def show
     return if r1_value > 150 && r1_value < 1_000_000 &&

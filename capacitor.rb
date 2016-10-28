@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Capacitor Class
 class Capacitor
   MULTIPLIER = 0.693 # ln(2)
@@ -32,7 +33,7 @@ class Capacitor
     # Any other value is assumed to be a number of uF.
     # :reek:FeatureEnvy
     def from_absolute_value(value)
-      new((value < 1.0) ? value : value * 10**-6)
+      new(value < 1.0 ? value : value * 10**-6)
     end
   end
 

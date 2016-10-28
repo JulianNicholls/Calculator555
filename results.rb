@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'calculator'
 require 'term/ansicolor'
 require 'rformat'
@@ -48,13 +49,15 @@ class Calc555Results
 
     printf(
       highlight("Duty Cycle: ~%5.1f%%~   (th: ~%.1fms~, tl: ~%.1fms~)\n\n"),
-      @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms)
+      @calc.duty_ratio_percent, @calc.th_ms, @calc.tl_ms
+    )
   end
 
   def show_above_1khz
     printf(
       highlight("Duty Cycle: ~%5.1f%%~   (th: ~%.1fµs~, tl: ~%.1fµs~)\n\n"),
-      @calc.duty_ratio_percent, @calc.th_ms * 1000.0, @calc.tl_ms * 1000.0)
+      @calc.duty_ratio_percent, @calc.th_ms * 1000.0, @calc.tl_ms * 1000.0
+    )
   end
 
   def show_resistors

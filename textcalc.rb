@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby -I.
+# frozen_string_literal: true
 
 require 'calculator'
 require 'term/ansicolor'
@@ -50,9 +51,9 @@ class TextCalculator
 
   def calculate_cycle_times
     r1_value = input_float("\nEnter the R1 value", 150, 1_000_000,
-                           "Resistors should be between 150Ω and 1MΩ")
+                           'Resistors should be between 150Ω and 1MΩ')
     r2_value = input_float('Enter the R2 value', 150, 1_000_000,
-                           "Resistors should be between 150Ω and 1MΩ")
+                           'Resistors should be between 150Ω and 1MΩ')
 
     @calc.set_resistors(r1_value, r2_value)
 

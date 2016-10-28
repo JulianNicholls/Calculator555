@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'capacitor'
 
 # Hold a pair of resistors
@@ -19,6 +21,7 @@ class Calculator555
     @capacitor = Capacitor.from_text(cap_text)
     @period    = nil
     @res_pack  = nil
+    @duty      = nil
   end
 
   def set_resistors(r1_value, r2_value)
@@ -90,7 +93,7 @@ class Calculator555
   # A value less than 1 represents a proportion. Any other value is taken to
   # be a percentage.
   def duty_ratio=(dr_value)
-    @duty = (dr_value < 1.0) ? dr_value : (dr_value / 100.0)
+    @duty = dr_value < 1.0 ? dr_value : (dr_value / 100.0)
 
     return unless @period
 
@@ -101,7 +104,7 @@ class Calculator555
   # value is assumed to be ms. This means that a period of say 1.1s could be
   # specified as 1100 (ms).
   def period=(p_value)
-    @period = (p_value < 1.0) ? p_value : (p_value / 1000.0)
+    @period = p_value < 1.0 ? p_value : (p_value / 1000.0)
 
     return unless @duty
 
