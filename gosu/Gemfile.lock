@@ -9,7 +9,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  gosu_enhanced (~> 0.4.2)
+  gosu_enhanced (~> 0.4.3)
 
 BUNDLED WITH
-   1.11.2
+   1.12.5

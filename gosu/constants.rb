@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Constants for first_calc / final version
 module Constants
   WIDTH   = 520

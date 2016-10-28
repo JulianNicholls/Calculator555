@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Label Block
 LabelBlock = Struct.new(:texts, :top_left, :font, :colour, :leading) do
   def render
@@ -21,7 +22,8 @@ class LabelsRenderer
   # :reek:LongParameterList: { max_params: 5 }
   def add_block(texts, top_left, font, colour, leading = 0)
     @blocks << LabelBlock.new(
-      texts, top_left, font, colour, leading != 0 ? leading : font.height)
+      texts, top_left, font, colour, leading.nonzero? ? leading : font.height
+    )
   end
 
   alias add add_block
