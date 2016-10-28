@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby -I.
+# frozen_string_literal: true
 
 $LOAD_PATH.unshift(File.expand_path('..'))
 
@@ -124,12 +125,12 @@ class GosuCalculator < Gosu::Window
     end
 
     # Advanced: Move caret to clicked position
-    text_input.move_caret(mouse_x) if text_input
+    text_input&.move_caret(mouse_x)
   end
 
   # Shift-Tab moves to the previous field
   def tab_delta
-     shift_pressed? ? -1 : 1
+    shift_pressed? ? -1 : 1
   end
 
   def shift_pressed?
